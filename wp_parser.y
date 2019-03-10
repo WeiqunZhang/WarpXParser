@@ -60,6 +60,7 @@ exp:
 | exp '-' exp                { $$ = wp_newnode(WP_SUB, $1, $3); }
 | exp '*' exp                { $$ = wp_newnode(WP_MUL, $1, $3); }
 | exp '/' exp                { $$ = wp_newnode(WP_DIV, $1, $3); }
+| '(' exp ')'                { $$ = $2; }
 | '-'exp %prec NEG           { $$ = wp_newnode(WP_NEG, $2, NULL); }
 | exp '^' exp                { $$ = wp_newf2(WP_POW, $1, $3); }
 | exp '*''*' exp %prec POW   { $$ = wp_newf2(WP_POW, $1, $4); }
