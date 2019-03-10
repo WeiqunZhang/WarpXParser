@@ -235,7 +235,7 @@ wp_parser_eval (void* parser, double const* da)
 }
 
 void*
-wp_parser_optimize (void)
+wp_parser_new (void)
 {
     struct wp_parser* my_parser = malloc(sizeof(struct wp_parser));
 
@@ -249,6 +249,101 @@ wp_parser_optimize (void)
     free(wp_lambda_function);
 
     return my_parser;
+}
+
+void
+wp_parser_optimize (void* parser)
+{
+    struct wp_parser* my_parser = (struct wp_parser*)parser;
+    wp_parser_astopt(my_parser->ast);
+}
+
+void
+wp_parser_astopt (struct wp_node* node)
+{
+    // no need to free because they are allocated from the pool
+    switch (node->type)
+    {
+    case WP_NUM:
+    case WP_SYMREF:
+        break;
+    case WP_ADD:
+        wp_parser_astopt(node->l);
+        wp_parser_astopt(node->r);
+        if (node->l->type == WP_NUM &&
+            node->r->type == WP_NUM)
+        {
+            double v = wp_eval(node);
+            ((struct wp_num*)node)->type = WP_NUM;
+            ((struct wp_num*)node)->value = v;
+        }
+        break;
+    case WP_SUB:
+        wp_parser_astopt(node->l);
+        wp_parser_astopt(node->r);
+        if (node->l->type == WP_NUM &&
+            node->r->type == WP_NUM)
+        {
+            double v = wp_eval(node);
+            ((struct wp_num*)node)->type = WP_NUM;
+            ((struct wp_num*)node)->value = v;
+        }
+        break;
+    case WP_MUL:
+        wp_parser_astopt(node->l);
+        wp_parser_astopt(node->r);
+        if (node->l->type == WP_NUM &&
+            node->r->type == WP_NUM)
+        {
+            double v = wp_eval(node);
+            ((struct wp_num*)node)->type = WP_NUM;
+            ((struct wp_num*)node)->value = v;
+        }
+        break;
+    case WP_DIV:
+        wp_parser_astopt(node->l);
+        wp_parser_astopt(node->r);
+        if (node->l->type == WP_NUM &&
+            node->r->type == WP_NUM)
+        {
+            double v = wp_eval(node);
+            ((struct wp_num*)node)->type = WP_NUM;
+            ((struct wp_num*)node)->value = v;
+        }
+        break;
+    case WP_NEG:
+        wp_parser_astopt(node->l);
+        if (node->l->type == WP_NUM)
+        {
+            double v = wp_eval(node);
+            ((struct wp_num*)node)->type = WP_NUM;
+            ((struct wp_num*)node)->value = v;
+        }
+        break;
+    case WP_F1:
+        wp_parser_astopt(node->l);
+        if (node->l->type == WP_NUM)
+        {
+            double v = wp_eval(node);
+            ((struct wp_num*)node)->type = WP_NUM;
+            ((struct wp_num*)node)->value = v;
+        }
+        break;
+    case WP_F2:
+        wp_parser_astopt(node->l);
+        wp_parser_astopt(node->r);
+        if (node->l->type == WP_NUM &&
+            node->r->type == WP_NUM)
+        {
+            double v = wp_eval(node);
+            ((struct wp_num*)node)->type = WP_NUM;
+            ((struct wp_num*)node)->value = v;
+        }
+        break;
+    default:
+        printf("Error in wp_astopt, node type %d\n", node->type);
+        exit(1);
+    }
 }
 
 void*

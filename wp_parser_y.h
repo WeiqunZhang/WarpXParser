@@ -121,7 +121,9 @@ void wp_parser_finalize (void* parser);
 void* wp_parser_allocate (struct wp_parser* my_parser, size_t N);
 
 double wp_parser_eval (void* parser, double const* da);
-void* wp_parser_optimize (void);
+void* wp_parser_new (void);
+void wp_parser_optimize (void* parser);
+void wp_parser_astopt (struct wp_node* node);
 void* wp_parser_dup (void* orig_parser);
 size_t wp_parser_size (struct wp_node* node);
 struct wp_node* wp_parser_astdup (struct wp_parser* parser, struct wp_node* src, int move);
