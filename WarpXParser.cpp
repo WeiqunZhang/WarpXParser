@@ -13,11 +13,11 @@ WarpXParser::WarpXParser (std::string func_body, std::string func_parms)
 
 WarpXParser::~WarpXParser ()
 {
-
+    wp_c_finalize(m_parser);
 }
 
 double
 WarpXParser::eval (double const* args)
 {
-    return wp_c_eval(args);
+    return wp_c_eval(m_parser, args);
 }

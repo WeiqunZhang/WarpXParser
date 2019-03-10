@@ -23,16 +23,16 @@ enum wp_f2_t {  // Built-in functions with two arguments
 
 enum wp_node_t {
     WP_NUM = 1,
-    WP_LIST,
-    WP_SYMREF,
-    WP_ADD,
-    WP_SUB,
-    WP_MUL,
-    WP_DIV,
-    WP_NEG,
-    WP_F1,
-    WP_F2,
-    WP_LAMBDA
+    WP_LIST = 2,
+    WP_SYMREF = 3,
+    WP_ADD = 4,
+    WP_SUB = 5,
+    WP_MUL = 6,
+    WP_DIV = 7,
+    WP_NEG = 8,
+    WP_F1 = 9,
+    WP_F2 = 10,
+    WP_LAMBDA = 11
 };
 
 struct wp_node {
@@ -65,8 +65,10 @@ struct wp_lambda {
     struct wp_node* body;
 };
 
+#define WP_MAXLEN_NAME 8
+
 struct wp_symbol {
-    char name[16];
+    char name[WP_MAXLEN_NAME];
     double value;
 };
 
@@ -79,7 +81,6 @@ struct wp_symref {
     enum wp_node_t type;
     struct wp_symbol* s;
 };
-
 
 double wp_evallambda (struct wp_node* args);
 double wp_eval (struct wp_node* node);
@@ -102,6 +103,21 @@ void yyerror (char *s, ...);
 
 /*******************************************************************/
 
-double wp_eval_dp (double const* da);
+struct wp_parser {
+    void* p_root;
+    void* p_free;
+    struct wp_symbol* args;
+    struct wp_node* ast;
+    int nargs;
+};
+void wp_parser_init (struct wp_parser* my_parser, size_t N, struct wp_symlist* args);
+void wp_parser_finalize (void* parser);
+void* wp_parser_allocate (struct wp_parser* my_parser, size_t N);
+
+double wp_parser_eval (void* parser, double const* da);
+void* wp_parser_optimize (void);
+size_t wp_parser_size (struct wp_node* node);
+struct wp_node* wp_parser_astdup (struct wp_parser* parser, struct wp_node* src, int move);
+struct wp_symbol* wp_parser_lookup (struct wp_parser* parser, char* name);
 
 #endif

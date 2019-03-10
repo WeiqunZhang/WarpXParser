@@ -178,9 +178,10 @@ wp_lookup (char* name)
 {
     for (int i = 0; i < WP_NSYMBOLS; ++i) {
         if (strlen(wp_sympool[i].name) == 0) {
-            strcpy(wp_sympool[i].name, name);
+            strncpy(wp_sympool[i].name, name, WP_MAXLEN_NAME-1);
+            wp_sympool[i].name[WP_MAXLEN_NAME-1] = '\0';
             return wp_sympool + i;
-        } else if (strcmp(name, wp_sympool[i].name) == 0) {
+        } else if (strncmp(name, wp_sympool[i].name, WP_MAXLEN_NAME-1) == 0) {
             return wp_sympool + i;
         }
     }
@@ -210,12 +211,175 @@ main (int argc, char* argv[])
 /*******************************************************************/
 
 double
-wp_eval_dp (double const* da)
+wp_parser_eval (void* parser, double const* da)
 {
-    struct wp_symlist* f_args = wp_lambda_function->args;
+    struct wp_parser* my_parser = (struct wp_parser*)parser;
+    for (int i = 0; i < my_parser->nargs; ++i) {
+        my_parser->args[i].value = da[i];
+    }
+    return wp_eval(my_parser->ast);
+}
+
+void*
+wp_parser_optimize (void)
+{
+    struct wp_parser* my_parser = malloc(sizeof(struct wp_parser));
+
+    size_t N_ast = wp_parser_size(wp_lambda_function->body);
+
+    wp_parser_init(my_parser, N_ast, wp_lambda_function->args);
+
+    my_parser->ast = wp_parser_astdup(my_parser, wp_lambda_function->body, 0);
+
+    return my_parser;
+}
+
+static size_t
+wp_aligned_size (size_t N)
+{
+    const unsigned int align_size = 16;
+    size_t x = N + (align_size-1);
+    x -= x & (align_size-1);
+    return x;
+}
+
+size_t
+wp_parser_size (struct wp_node* node)
+{
+    size_t result;
+
+    switch (node->type)
+    {
+    case WP_NUM:
+        result = wp_aligned_size(sizeof(struct wp_num));
+        break;
+    case WP_SYMREF:
+        result = wp_aligned_size(sizeof(struct wp_symref));
+        break;
+    case WP_ADD:
+    case WP_SUB:
+    case WP_MUL:
+    case WP_DIV:
+        result = wp_aligned_size(sizeof(struct wp_node))
+            + wp_parser_size(node->l) + wp_parser_size(node->r);
+        break;
+    case WP_NEG:
+        result = wp_aligned_size(sizeof(struct wp_node))
+            + wp_parser_size(node->l);
+        break;
+    case WP_F1:
+        result = wp_aligned_size(sizeof(struct wp_f1))
+            + wp_parser_size(node->l);
+        break;
+    case WP_F2:
+        result = wp_aligned_size(sizeof(struct wp_f2))
+            + wp_parser_size(node->l) + wp_parser_size(node->r);
+        break;
+    default:
+        printf("Error in count_size, node type %d\n", node->type);
+        exit(1);
+    }
+
+    return result;
+}
+
+struct wp_node*
+wp_parser_astdup (struct wp_parser* my_parser, struct wp_node* node, int move)
+{
+    void* result;
+
+    switch (node->type)
+    {
+    case WP_NUM:
+        result = wp_parser_allocate(my_parser, sizeof(struct wp_num));
+        ((struct wp_num*)result)->type = node->type;
+        ((struct wp_num*)result)->value = ((struct wp_num*)node)->value;
+        break;
+    case WP_SYMREF:
+        result = wp_parser_allocate(my_parser, sizeof(struct wp_symref));
+        ((struct wp_symref*)result)->type = node->type;
+        ((struct wp_symref*)result)->s = wp_parser_lookup(my_parser, ((struct wp_symref*)node)->s->name);
+        break;
+    case WP_ADD:
+    case WP_SUB:
+    case WP_MUL:
+    case WP_DIV:
+        result = wp_parser_allocate(my_parser, sizeof(struct wp_node));
+        ((struct wp_node*)result)->type = node->type;
+        ((struct wp_node*)result)->l = wp_parser_astdup(my_parser, node->l, move);
+        ((struct wp_node*)result)->r = wp_parser_astdup(my_parser, node->r, move);
+        break;
+    case WP_NEG:
+        result = wp_parser_allocate(my_parser, sizeof(struct wp_node));
+        ((struct wp_node*)result)->type = node->type;
+        ((struct wp_node*)result)->l = wp_parser_astdup(my_parser, node->l, move);
+        ((struct wp_node*)result)->r = NULL;
+        break;
+    case WP_F1:
+        result = wp_parser_allocate(my_parser, sizeof(struct wp_f1));
+        ((struct wp_f1*)result)->type = node->type;
+        ((struct wp_f1*)result)->l = wp_parser_astdup(my_parser, ((struct wp_f1*)node)->l, move);
+        ((struct wp_f1*)result)->ftype = ((struct wp_f1*)node)->ftype;
+        break;
+    case WP_F2:
+        result = wp_parser_allocate(my_parser, sizeof(struct wp_f2));
+        ((struct wp_f2*)result)->type = node->type;
+        ((struct wp_f2*)result)->l = wp_parser_astdup(my_parser, ((struct wp_f2*)node)->l, move);
+        ((struct wp_f2*)result)->r = wp_parser_astdup(my_parser, ((struct wp_f2*)node)->r, move);
+        ((struct wp_f2*)result)->ftype = ((struct wp_f2*)node)->ftype;
+        break;
+    default:
+        printf("Error in eval, node type %d\n", node->type);
+        exit(1);
+    }
+    return result;
+}
+
+void
+wp_parser_init (struct wp_parser* my_parser, size_t N_ast, struct wp_symlist* args)
+{
+    int nargs = 0;
+    struct wp_symlist* f_args = args;
     while (f_args != NULL) {
-        f_args->sym->value = *da++;
+        f_args = f_args->next;
+        ++nargs;
+    }
+
+    my_parser->p_root = malloc(N_ast + wp_aligned_size(sizeof(struct wp_symbol))*nargs);
+    my_parser->p_free = my_parser->p_root;
+
+    my_parser->args = wp_parser_allocate(my_parser, sizeof(struct wp_symref)*nargs);
+    f_args = args;
+    for (int i = 0; i < nargs; ++i) {
+        strcpy(my_parser->args[i].name, f_args->sym->name);
         f_args = f_args->next;
     }
-    return wp_eval(wp_lambda_function->body);
+    my_parser->nargs = nargs;
+}
+
+void
+wp_parser_finalize (void* parser)
+{
+    struct wp_parser* my_parser = (struct wp_parser*)parser;
+    free(my_parser->p_root);
+    free(my_parser);
+}
+
+void*
+wp_parser_allocate (struct wp_parser* my_parser, size_t N)
+{
+    void* r = my_parser->p_free;
+    my_parser->p_free = (char*)r + wp_aligned_size(N);
+    return r;
+}
+
+struct wp_symbol*
+wp_parser_lookup (struct wp_parser* my_parser, char* name)
+{
+    for (int i = 0; i < my_parser->nargs; ++i) {
+        if (strcmp(name, my_parser->args[i].name) == 0) {
+            return my_parser->args+i;
+        }
+    }
+    return NULL;
 }

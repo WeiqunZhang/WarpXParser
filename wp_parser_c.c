@@ -11,14 +11,17 @@ wp_c_parse (char const* body)
 {
     YY_BUFFER_STATE buffer = yy_scan_string(body);
     yyparse();
-//    double a[2] = {2.2,2.8};
-//    printf("eval(2.2,2.8) = %g\n", wp_eval_dp(a));
-//    yy_delete_buffer(buffer);
-    return NULL;
+    return wp_parser_optimize();
 }
 
 double
-wp_c_eval (double const* dp)
+wp_c_eval (void* parser, double const* dp)
 {
-    return wp_eval_dp(dp);
+    return wp_parser_eval(parser, dp);
+}
+
+void
+wp_c_finalize (void* parser)
+{
+    wp_parser_finalize(parser);
 }
