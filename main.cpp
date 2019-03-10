@@ -34,7 +34,6 @@ int main(int argc, char* argv[])
                                                                 var.c_str(), var.length());
         {
             TinyProfiler tp("F");
-            int pos = 0;
             Real xyz[3];
             for (int m = 0; m < nm; ++m) {
                 Real t = m*1.e-10;
@@ -44,7 +43,8 @@ int main(int argc, char* argv[])
                         xyz[1] = (j+0.5)*1.e-6;
                         for (int i = 0; i < ni; ++i) {
                             xyz[0] = (i+0.5)*1.e-6;
-                            d[pos++] = parser_evaluate_function(xyz, 3, parser_instance_number);
+                            size_t pos = i + j*ni + k*(ni*nj) + m*static_cast<size_t>(ni*nj*nk);
+                            d[pos] = parser_evaluate_function(xyz, 3, parser_instance_number);
                         }
                     }
                 }
@@ -61,20 +61,28 @@ int main(int argc, char* argv[])
         WarpXParser parser(expr, var);
         {
             TinyProfiler tp("C");
-            int pos = 0;
-            Real xyz[3];
             for (int m = 0; m < nm; ++m) {
                 Real t = m*1.e-10;
+#ifdef _OPENMP
+#pragma omp parallel
+#endif
+              {
+                Real xyz[3];                
+#ifdef _OPENMP
+#pragma omp for
+#endif
                 for (int k = 0; k < nk; ++k) {
                     xyz[2] = (k+0.5)*1.e-6;
                     for (int j = 0; j < nj; ++j) {
                         xyz[1] = (j+0.5)*1.e-6;
                         for (int i = 0; i < ni; ++i) {
                             xyz[0] = (i+0.5)*1.e-6;
-                            d[pos++] = parser.eval(xyz);
+                            size_t pos = i + j*ni + k*(ni*nj) + m*static_cast<size_t>(ni*nj*nk);
+                            d[pos] = parser.eval(xyz);
                         }
                     }
                 }
+              }
             }
         }
             

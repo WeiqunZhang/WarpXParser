@@ -111,6 +111,7 @@ struct wp_parser {
     struct wp_symbol* args;
     struct wp_node* ast;
     int nargs;
+    size_t sz_mempool;
 };
 void wp_parser_init (struct wp_parser* my_parser, size_t N, struct wp_symlist* args);
 void wp_parser_finalize (void* parser);
@@ -118,6 +119,7 @@ void* wp_parser_allocate (struct wp_parser* my_parser, size_t N);
 
 double wp_parser_eval (void* parser, double const* da);
 void* wp_parser_optimize (void);
+void* wp_parser_dup (void* orig_parser);
 size_t wp_parser_size (struct wp_node* node);
 struct wp_node* wp_parser_astdup (struct wp_parser* parser, struct wp_node* src, int move);
 struct wp_symbol* wp_parser_lookup (struct wp_parser* parser, char* name);

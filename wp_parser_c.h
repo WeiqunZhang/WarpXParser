@@ -7,6 +7,8 @@ extern "C" {
 
     void* wp_c_parse (char const* body);
 
+    void* wp_c_parserdup (void* psrc);
+
     double wp_c_eval (void* parser, double const* dp);
 
     void wp_c_finalize (void* parser);

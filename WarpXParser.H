@@ -15,7 +15,7 @@ public:
 private:
     std::string m_body;
     std::string m_parms;
-    void* m_parser;
+    std::vector<void*> m_parser;
 };
 
 #endif

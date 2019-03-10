@@ -246,6 +246,27 @@ wp_parser_optimize (void)
     return my_parser;
 }
 
+void*
+wp_parser_dup (void* a_orig_parser)
+{
+    struct wp_parser* orig_parser = (struct wp_parser*)a_orig_parser;
+
+    struct wp_parser* my_parser = malloc(sizeof(struct wp_parser));
+    my_parser->sz_mempool = orig_parser->sz_mempool;
+    my_parser->p_root = malloc(my_parser->sz_mempool);
+    my_parser->p_free = my_parser->p_root;
+
+    my_parser->nargs = orig_parser->nargs;
+    my_parser->args = wp_parser_allocate(my_parser, sizeof(struct wp_symref)*my_parser->nargs);
+    for (int i = 0; i < my_parser->nargs; ++i) {
+        strcpy(my_parser->args[i].name, orig_parser->args[i].name);
+    }
+
+    my_parser->ast = wp_parser_astdup(my_parser, orig_parser->ast, 0);
+
+    return my_parser;
+}
+
 static size_t
 wp_aligned_size (size_t N)
 {
@@ -358,7 +379,8 @@ wp_parser_init (struct wp_parser* my_parser, size_t N_ast, struct wp_symlist* ar
         ++nargs;
     }
 
-    my_parser->p_root = malloc(N_ast + wp_aligned_size(sizeof(struct wp_symbol))*nargs);
+    my_parser->sz_mempool = N_ast + wp_aligned_size(sizeof(struct wp_symbol))*nargs;
+    my_parser->p_root = malloc(my_parser->sz_mempool);
     my_parser->p_free = my_parser->p_root;
 
     my_parser->args = wp_parser_allocate(my_parser, sizeof(struct wp_symref)*nargs);

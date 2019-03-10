@@ -16,6 +16,12 @@ wp_c_parse (char const* body)
     return parser;
 }
 
+void*
+wp_c_parserdup (void* orig_parser)
+{
+    return wp_parser_dup(orig_parser);
+}
+
 double
 wp_c_eval (void* parser, double const* dp)
 {
