@@ -28,8 +28,11 @@ int main(int argc, char* argv[])
 
         const int nm = 1;
         const int nk = 100;
-        const int nj = 10;
-        const int ni = 10;
+        const int nj = 100;
+        const int ni = 100;
+        const Real dx = 1./ni;
+        const Real dy = 1./nj;
+        const Real dz = 1./nk;
         Vector<Real> d(nm*nk*nj*ni, 0.0);
 
         if (use_fortran_parser)
@@ -43,11 +46,11 @@ int main(int argc, char* argv[])
                 for (int m = 0; m < nm; ++m) {
                     Real t = m*1.e-10;
                     for (int k = 0; k < nk; ++k) {
-                        xyz[2] = (k+0.5)*1.e-6;
+                        xyz[2] = (k+0.5)*dz - 0.5;
                         for (int j = 0; j < nj; ++j) {
-                            xyz[1] = (j+0.5)*1.e-6;
+                            xyz[1] = (j+0.5)*dy - 0.5;
                             for (int i = 0; i < ni; ++i) {
-                                xyz[0] = (i+0.5)*1.e-6;
+                                xyz[0] = (i+0.5)*dx - 0.5;
                                 size_t pos = i + j*ni + k*(ni*nj) + m*static_cast<size_t>(ni*nj*nk);
                                 d[pos] = parser_evaluate_function(xyz, 3, parser_instance_number);
                             }
@@ -79,11 +82,11 @@ int main(int argc, char* argv[])
 #pragma omp for
 #endif
                         for (int k = 0; k < nk; ++k) {
-                            xyz[2] = (k+0.5)*1.e-6;
+                            xyz[2] = (k+0.5)*dz - 0.5;
                             for (int j = 0; j < nj; ++j) {
-                                xyz[1] = (j+0.5)*1.e-6;
+                                xyz[1] = (j+0.5)*dy - 0.5;
                                 for (int i = 0; i < ni; ++i) {
-                                    xyz[0] = (i+0.5)*1.e-6;
+                                    xyz[0] = (i+0.5)*dx - 0.5;
                                     size_t pos = i + j*ni + k*(ni*nj) + m*static_cast<size_t>(ni*nj*nk);
                                     d[pos] = parser.eval(xyz);
                                 }
