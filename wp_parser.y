@@ -23,8 +23,10 @@
 %token <d>  NUM
 %token <s>  SYMBOL
 %token <f1> FNCT1
-%token <f1> FNCT2
+%token <f2> FNCT2
 %token EOL
+
+%token POW "**"
 
 %token LAMBDA EVAL
 
@@ -34,7 +36,7 @@
 %left '*' '/'
 %left '<' '>'
 %nonassoc NEG
-%right '^' POW
+%right POW
 
 %type <a> exp explist
 %type <l> symlist
@@ -65,8 +67,7 @@ exp:
 | exp '<' exp                { $$ = wp_newf2(WP_LT, $1, $3); }
 | exp '>' exp                { $$ = wp_newf2(WP_GT, $1, $3); }
 | '-'exp %prec NEG           { $$ = wp_newnode(WP_NEG, $2, NULL); }
-| exp '^' exp                { $$ = wp_newf2(WP_POW, $1, $3); }
-| exp '*''*' exp %prec POW   { $$ = wp_newf2(WP_POW, $1, $4); }
+| exp POW exp                { $$ = wp_newf2(WP_POW, $1, $3); }
 | FNCT1 '(' exp ')'          { $$ = wp_newf1($1, $3); }
 | FNCT2 '(' exp ',' exp ')'  { $$ = wp_newf2($1, $3, $5); }
 ;

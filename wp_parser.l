@@ -39,6 +39,7 @@ EXP	([Ee][-+]?[0-9]+)
 "cosh"     { yylval.f1 = WP_COSH;   return FNCT1; }
 "tanh"     { yylval.f1 = WP_TANH;   return FNCT1; }
 
+"**"       { yylval.f2 = WP_POW;    return POW; }
 "pow"      { yylval.f2 = WP_POW;    return FNCT2; }
 
  /* symbols */
