@@ -18,7 +18,9 @@ enum wp_f1_t {  // Bulit-in functions with one argument
 };
 
 enum wp_f2_t {  // Built-in functions with two arguments
-    WP_POW = 1
+    WP_POW = 1,
+    WP_GT,
+    WP_LT
 };
 
 enum wp_node_t {

@@ -100,6 +100,10 @@ wp_callf2 (struct wp_f2* f2)
     switch (f2->ftype) {
     case WP_POW:
         return pow(a,b);
+    case WP_GT:
+        return (a > b) ? 1.0 : 0.0;
+    case WP_LT:
+        return (a < b) ? 1.0 : 0.0;
     default:
         yyerror("Unknow function %d", f2->ftype);
         return 0.0;
