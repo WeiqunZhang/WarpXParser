@@ -86,6 +86,7 @@ wp_callf1 (struct wp_f1* f1)
     case WP_SINH:   return sinh(a);
     case WP_COSH:   return cosh(a);
     case WP_TANH:   return tanh(a);
+    case WP_ABS:    return fabs(a);
     default:
         yyerror("Unknow function %d", f1->ftype);
         return 0.0;

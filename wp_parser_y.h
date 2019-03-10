@@ -14,7 +14,8 @@ enum wp_f1_t {  // Bulit-in functions with one argument
     WP_ATAN,
     WP_SINH,
     WP_COSH,
-    WP_TANH
+    WP_TANH,
+    WP_ABS
 };
 
 enum wp_f2_t {  // Built-in functions with two arguments
