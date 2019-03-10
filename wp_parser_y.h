@@ -96,6 +96,8 @@ struct wp_node* wp_newf2 (enum wp_f2_t ftype, struct wp_node* l, struct wp_node*
 struct wp_node* wp_newsymref (struct wp_symbol* s);
 struct wp_symlist* wp_newsymlist (struct wp_symbol* sym, struct wp_symlist* next);
 
+void wp_freesymlist (struct wp_symlist* symlist);
+
 struct wp_symbol* wp_lookup (char* name);
 
 extern int yylineno; /* from lexer */

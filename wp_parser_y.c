@@ -173,6 +173,15 @@ wp_newsymlist (struct wp_symbol* sym, struct wp_symlist* next)
     return p;
 }
 
+void
+wp_freesymlist (struct wp_symlist* p)
+{
+    if (p->next != NULL) {
+        wp_freesymlist(p->next);
+    }
+    free(p);
+}
+
 struct wp_symbol*
 wp_lookup (char* name)
 {
@@ -229,7 +238,10 @@ wp_parser_optimize (void)
 
     wp_parser_init(my_parser, N_ast, wp_lambda_function->args);
 
-    my_parser->ast = wp_parser_astdup(my_parser, wp_lambda_function->body, 0);
+    my_parser->ast = wp_parser_astdup(my_parser, wp_lambda_function->body, 1);
+
+    wp_freesymlist(wp_lambda_function->args);
+    free(wp_lambda_function);
 
     return my_parser;
 }
@@ -332,6 +344,7 @@ wp_parser_astdup (struct wp_parser* my_parser, struct wp_node* node, int move)
         printf("Error in eval, node type %d\n", node->type);
         exit(1);
     }
+    if (move) free((void*)node);
     return result;
 }
 

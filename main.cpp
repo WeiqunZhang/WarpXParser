@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
         
         std::string var = "x,y,z";
 
-        const int nm = 100;
+        const int nm = 1;
         const int nk = 100;
         const int nj = 10;
         const int ni = 10;

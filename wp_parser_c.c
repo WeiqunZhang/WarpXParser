@@ -11,7 +11,9 @@ wp_c_parse (char const* body)
 {
     YY_BUFFER_STATE buffer = yy_scan_string(body);
     yyparse();
-    return wp_parser_optimize();
+    void* parser = wp_parser_optimize();
+    yy_delete_buffer(buffer);
+    return parser;
 }
 
 double
