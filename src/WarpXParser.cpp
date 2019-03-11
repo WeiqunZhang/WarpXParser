@@ -18,7 +18,7 @@ WarpXParser::WarpXParser (std::string const& func_body)
     {
         int tid = omp_get_thread_num();
         if (tid > 0) {
-            m_parser[tid] = wp_c_parser_dup(m_parser[0]);
+            m_parser[tid] = wp_parser_dup(m_parser[0]);
         }
     }
 #endif
@@ -32,10 +32,10 @@ WarpXParser::~WarpXParser ()
 #pragma omp parallel
     {
         int tid = omp_get_thread_num();
-        wp_c_parser_delete(m_parser[tid]);
+        wp_parser_delete(m_parser[tid]);
     }
 #else
-    wp_c_parser_delete(p0);
+    wp_parser_delete(p0);
 #endif
 }
 
@@ -44,9 +44,9 @@ WarpXParser::registerVariable (std::string const& name, double& var)
 {
     // We assume this is called inside OMP parallel region
 #ifdef _OPENMP
-    wp_c_parser_regvar(m_parser[omp_get_thread_num()], name.c_str(), &var);
+    wp_parser_regvar(m_parser[omp_get_thread_num()], name.c_str(), &var);
 #else
-    wp_c_parser_regvar(p0, name.c_str(), &var);
+    wp_parser_regvar(p0, name.c_str(), &var);
 #endif
 }
 
@@ -58,10 +58,10 @@ WarpXParser::setConstant (std::string const& name, double c)
     bool in_parallel = omp_in_parallel();
 #pragma omp parallel if (!in_parallel)
     {
-        wp_c_parser_setconst(m_parser[omp_get_thread_num()], name.c_str(), c);
+        wp_parser_setconst(m_parser[omp_get_thread_num()], name.c_str(), c);
     }
 #else
-    wp_c_parser_setconst(p0, name.c_str(), c);
+    wp_parser_setconst(p0, name.c_str(), c);
 #endif
 }
 

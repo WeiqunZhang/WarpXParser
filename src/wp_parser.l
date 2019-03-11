@@ -1,4 +1,4 @@
-%option noyywrap nodefault yylineno
+%option noyywrap nodefault
 %{
 #include "wp_parser_y.h"
 #include "wp_parser.tab.h"
@@ -34,7 +34,7 @@ EXP	([Ee][-+]?[0-9]+)
 "cosh"        { yylval.f1 = WP_COSH;      return F1; }
 "tanh"        { yylval.f1 = WP_TANH;      return F1; }
 "abs"         { yylval.f1 = WP_ABS;       return F1; }
-"**"          { yylval.f2 = WP_POW;       return POW; }
+"**"          { yylval.f2 = WP_POW;       return POW;}
 "pow"         { yylval.f2 = WP_POW;       return F2; }
 "heaviside"   { yylval.f1 = WP_HEAVISIDE; return F2; }
 

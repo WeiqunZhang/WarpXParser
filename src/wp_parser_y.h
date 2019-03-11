@@ -1,6 +1,13 @@
 #ifndef WP_PARSER_Y_H_
 #define WP_PARSER_Y_H_
 
+#ifdef __cplusplus
+#include <cstdlib>
+extern "C" {
+#else
+#include <stdlib.h>
+#endif
+
 enum wp_f1_t {  // Bulit-in functions with one argument
     WP_SQRT = 1,
     WP_EXP,
@@ -79,11 +86,7 @@ struct wp_node* wp_newf1 (enum wp_f1_t ftype, struct wp_node* l);
 struct wp_node* wp_newf2 (enum wp_f2_t ftype, struct wp_node* l,
                           struct wp_node* r);
 
-double wp_callf1 (struct wp_f1* f1);
-double wp_callf2 (struct wp_f2* f2);
-
-extern int yylineno; /* from lexer */
-void yyerror (char *s, ...);
+void yyerror (char const *s, ...);
 
 /*******************************************************************/
 
@@ -94,11 +97,11 @@ struct wp_parser {
     size_t sz_mempool;
 };
 
-void* wp_parser_new (void);
-void wp_parser_delete (void* parser);
+struct wp_parser* wp_parser_new (void);
+void wp_parser_delete (struct wp_parser* parser);
 void* wp_parser_allocate (struct wp_parser* my_parser, size_t N);
 
-void* wp_parser_dup (struct wp_parser* source);
+struct wp_parser* wp_parser_dup (struct wp_parser* source);
 struct wp_node* wp_parser_ast_dup (struct wp_parser* parser, struct wp_node* src, int move);
 
 double wp_ast_eval (struct wp_node* node);
@@ -107,8 +110,11 @@ size_t wp_ast_size (struct wp_node* node);
 void wp_ast_regvar (struct wp_node* node, char const* name, double* p);
 void wp_ast_setconst (struct wp_node* node, char const* name, double c);
 
-double wp_parser_eval (void* parser);
 void wp_parser_regvar (struct wp_parser* parser, char const* name, double* p);
 void wp_parser_setconst (struct wp_parser* parser, char const* name, double c);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

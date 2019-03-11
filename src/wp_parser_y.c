@@ -70,65 +70,19 @@ wp_newf2 (enum wp_f2_t ftype, struct wp_node* l, struct wp_node* r)
     return (struct wp_node*) tmp;
 }
 
-double
-wp_callf1 (struct wp_f1* f1)
-{
-    double a = wp_ast_eval(f1->l);
-    switch (f1->ftype) {
-    case WP_SQRT:        return sqrt(a);
-    case WP_EXP:         return exp(a);
-    case WP_LOG:         return log(a);
-    case WP_LOG10:       return log10(a);
-    case WP_SIN:         return sin(a);
-    case WP_COS:         return cos(a);
-    case WP_TAN:         return tan(a);
-    case WP_ASIN:        return asin(a);
-    case WP_ACOS:        return acos(a);
-    case WP_ATAN:        return atan(a);
-    case WP_SINH:        return sinh(a);
-    case WP_COSH:        return cosh(a);
-    case WP_TANH:        return tanh(a);
-    case WP_ABS:         return fabs(a);
-    default:
-        yyerror("Unknow function %d", f1->ftype);
-        return 0.0;
-    }
-}
-
-double
-wp_callf2 (struct wp_f2* f2)
-{
-    double a = wp_ast_eval(f2->l);
-    double b = wp_ast_eval(f2->r);
-    switch (f2->ftype) {
-    case WP_POW:
-        return pow(a,b);
-    case WP_GT:
-        return (a > b) ? 1.0 : 0.0;
-    case WP_LT:
-        return (a < b) ? 1.0 : 0.0;
-    case WP_HEAVISIDE:
-        return (a < 0.0) ? 0.0 : ((a > 0.0) ? 1.0 : b);
-    default:
-        yyerror("Unknow function %d", f2->ftype);
-        return 0.0;
-    }
-}
-
 void
-yyerror (char *s, ...)
+yyerror (char const *s, ...)
 {
     va_list vl;
     va_start(vl, s);
     vfprintf(stderr, s, vl);
-    fprintf(stderr, " Error at line %d:", yylineno);
     fprintf(stderr, "\n");
     va_end(vl);
 }
 
 /*******************************************************************/
 
-void*
+struct wp_parser*
 wp_parser_new (void)
 {
     struct wp_parser* my_parser = malloc(sizeof(struct wp_parser));
@@ -150,11 +104,10 @@ wp_parser_new (void)
 }
 
 void
-wp_parser_delete (void* parser)
+wp_parser_delete (struct wp_parser* parser)
 {
-    struct wp_parser* my_parser = (struct wp_parser*)parser;
-    free(my_parser->p_root);
-    free(my_parser);
+    free(parser->p_root);
+    free(parser);
 }
 
 static size_t
@@ -174,7 +127,7 @@ wp_parser_allocate (struct wp_parser* my_parser, size_t N)
     return r;
 }
 
-void*
+struct wp_parser*
 wp_parser_dup (struct wp_parser* source)
 {
     struct wp_parser* dest = malloc(sizeof(struct wp_parser));
@@ -185,6 +138,53 @@ wp_parser_dup (struct wp_parser* source)
     dest->ast = wp_parser_ast_dup(dest, source->ast, 0); /* 0: don't free the source */
 
     return dest;
+}
+
+static
+double
+wp_callf1 (struct wp_f1* f1)
+{
+    double a = wp_ast_eval(f1->l);
+    switch (f1->ftype) {
+    case WP_SQRT:        return sqrt(a);
+    case WP_EXP:         return exp(a);
+    case WP_LOG:         return log(a);
+    case WP_LOG10:       return log10(a);
+    case WP_SIN:         return sin(a);
+    case WP_COS:         return cos(a);
+    case WP_TAN:         return tan(a);
+    case WP_ASIN:        return asin(a);
+    case WP_ACOS:        return acos(a);
+    case WP_ATAN:        return atan(a);
+    case WP_SINH:        return sinh(a);
+    case WP_COSH:        return cosh(a);
+    case WP_TANH:        return tanh(a);
+    case WP_ABS:         return fabs(a);
+    default:
+        yyerror("wp_callf1: Unknow function %d", f1->ftype);
+        return 0.0;
+    }
+}
+
+static
+double
+wp_callf2 (struct wp_f2* f2)
+{
+    double a = wp_ast_eval(f2->l);
+    double b = wp_ast_eval(f2->r);
+    switch (f2->ftype) {
+    case WP_POW:
+        return pow(a,b);
+    case WP_GT:
+        return (a > b) ? 1.0 : 0.0;
+    case WP_LT:
+        return (a < b) ? 1.0 : 0.0;
+    case WP_HEAVISIDE:
+        return (a < 0.0) ? 0.0 : ((a > 0.0) ? 1.0 : b);
+    default:
+        yyerror("wp_callf2: Unknow function %d", f2->ftype);
+        return 0.0;
+    }
 }
 
 double
@@ -223,7 +223,6 @@ wp_ast_eval (struct wp_node* node)
         break;
     default:
         yyerror("wp_ast_eval: unknown node type %d\n", node->type);
-        exit(1);
     }
 
     return result;
@@ -325,7 +324,7 @@ wp_parser_ast_dup (struct wp_parser* my_parser, struct wp_node* node, int move)
         }
         free((void*)node);
     }
-    return result;
+    return (struct wp_node*)result;
 }
 
 void
@@ -484,12 +483,6 @@ void wp_ast_setconst (struct wp_node* node, char const* name, double c)
         yyerror("wp_ast_setconst: unknown node type %d\n", node->type);
         exit(1);
     }
-}
-
-double
-wp_parser_eval (void* parser)
-{
-    return wp_ast_eval(((struct wp_parser*)parser)->ast);
 }
 
 void
