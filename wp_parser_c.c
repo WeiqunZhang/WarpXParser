@@ -23,12 +23,6 @@ wp_c_parserdup (void* orig_parser)
     return wp_parser_dup(orig_parser);
 }
 
-double
-wp_c_eval (void* parser, double const* dp)
-{
-    return wp_parser_eval(parser, dp);
-}
-
 void
 wp_c_finalize (void* parser)
 {
