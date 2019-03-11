@@ -1,0 +1,5 @@
+
+f = "exp(-(x**2+y**2)/2.0)*(z<lramp)*0.5*(1-cos(pi*z/lramp))*dens+(z>lramp)*dens"
+
+constant_names  = lramp  pi                 dens
+constant_values = 8.e-3  3.141592653589793  1e+23
