@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
                 // and they are private to avoid race conditions.
                 // Call registerVariable outside for loops because they
                 // only need to be registered once.
-                Real x, y, z;
+                double x, y, z;
                 parser.registerVariable("x",x); 
                 parser.registerVariable("y",y);
                 parser.registerVariable("z",z);

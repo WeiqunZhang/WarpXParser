@@ -75,20 +75,20 @@ wp_callf1 (struct wp_f1* f1)
 {
     double a = wp_ast_eval(f1->l);
     switch (f1->ftype) {
-    case WP_SQRT:   return sqrt(a);
-    case WP_EXP:    return exp(a);
-    case WP_LOG:    return log(a);
-    case WP_LOG10:  return log10(a);
-    case WP_SIN:    return sin(a);
-    case WP_COS:    return cos(a);
-    case WP_TAN:    return tan(a);
-    case WP_ASIN:   return asin(a);
-    case WP_ACOS:   return acos(a);
-    case WP_ATAN:   return atan(a);
-    case WP_SINH:   return sinh(a);
-    case WP_COSH:   return cosh(a);
-    case WP_TANH:   return tanh(a);
-    case WP_ABS:    return fabs(a);
+    case WP_SQRT:        return sqrt(a);
+    case WP_EXP:         return exp(a);
+    case WP_LOG:         return log(a);
+    case WP_LOG10:       return log10(a);
+    case WP_SIN:         return sin(a);
+    case WP_COS:         return cos(a);
+    case WP_TAN:         return tan(a);
+    case WP_ASIN:        return asin(a);
+    case WP_ACOS:        return acos(a);
+    case WP_ATAN:        return atan(a);
+    case WP_SINH:        return sinh(a);
+    case WP_COSH:        return cosh(a);
+    case WP_TANH:        return tanh(a);
+    case WP_ABS:         return fabs(a);
     default:
         yyerror("Unknow function %d", f1->ftype);
         return 0.0;
@@ -107,6 +107,8 @@ wp_callf2 (struct wp_f2* f2)
         return (a > b) ? 1.0 : 0.0;
     case WP_LT:
         return (a < b) ? 1.0 : 0.0;
+    case WP_HEAVISIDE:
+        return (a < 0.0) ? 0.0 : ((a > 0.0) ? 1.0 : b);
     default:
         yyerror("Unknow function %d", f2->ftype);
         return 0.0;

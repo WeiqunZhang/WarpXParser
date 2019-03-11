@@ -50,5 +50,6 @@ std::vector<double> result(100);
         t = 0.1 * i;
         result[i] = parser.eval();
     }
+}
 ```
 
