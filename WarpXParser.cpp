@@ -1,15 +1,7 @@
 
 #include "WarpXParser.H"
-#include "wp_parser_c.h"
-#include <AMReX_Print.H>
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
-
-WarpXParser::WarpXParser (std::string func_body, std::string func_parms)
-    : m_body(func_body),
-      m_parms(func_parms)
+WarpXParser::WarpXParser (std::string const& func_body)
 {
 #ifdef _OPENMP
     int nthreads = omp_get_max_threads();
@@ -18,18 +10,20 @@ WarpXParser::WarpXParser (std::string func_body, std::string func_parms)
 #endif
     m_parser.resize(nthreads);
 
-    std::string f = "lambda(" + m_parms + ")=" + m_body + "\n";
-    m_parser[0] = wp_c_parse(f.c_str());
+    std::string f = func_body + "\n";
+    m_parser[0] = wp_c_parser_new(f.c_str());
 
 #ifdef _OPENMP
 #pragma omp parallel
     {
         int tid = omp_get_thread_num();
         if (tid > 0) {
-            m_parser[tid] = wp_c_parserdup(m_parser[0]);
+            m_parser[tid] = wp_c_parser_dup(m_parser[0]);
         }
     }
 #endif
+
+    p0 = m_parser[0];
 }
 
 WarpXParser::~WarpXParser ()
@@ -38,20 +32,36 @@ WarpXParser::~WarpXParser ()
 #pragma omp parallel
     {
         int tid = omp_get_thread_num();
-        wp_c_finalize(m_parser[tid]);
+        wp_c_parser_delete(m_parser[tid]);
     }
 #else
-    wp_c_finalize(m_parser[0]);
+    wp_c_parser_delete(p0);
 #endif
 }
 
-double
-WarpXParser::eval (double const* args)
+void
+WarpXParser::registerVariable (std::string const& name, double& var)
 {
+    // We assume this is called inside OMP parallel region
 #ifdef _OPENMP
-    int tid = omp_get_thread_num();
+    wp_c_parser_regvar(m_parser[omp_get_thread_num()], name.c_str(), &var);
 #else
-    int tid = 0;
+    wp_c_parser_regvar(p0, name.c_str(), &var);
 #endif
-    return wp_c_eval(m_parser[tid], args);
 }
+
+void
+WarpXParser::setConstant (std::string const& name, double c)
+{
+    // We don't know if this is inside OMP parallel region or not
+#ifdef _OPENMP
+    bool in_parallel = omp_in_parallel();
+#pragma omp parallel if (!in_parallel)
+    {
+        wp_c_parser_setconst(m_parser[omp_get_thread_num()], name.c_str(), c);
+    }
+#else
+    wp_c_parser_setconst(p0, name.c_str(), c);
+#endif
+}
+

@@ -3,6 +3,7 @@
 #include <AMReX_Print.H>
 #include <AMReX_ParmParse.H>
 #include <AMReX_TinyProfiler.H>
+#include <AMReX_FArrayBox.H>
 #include "WarpXParser.H"
 
 using namespace amrex;
@@ -26,14 +27,13 @@ int main(int argc, char* argv[])
         
         std::string var = "x,y,z";
 
-        const int nm = 1;
-        const int nk = 100;
-        const int nj = 100;
-        const int ni = 100;
-        const Real dx = 1./ni;
-        const Real dy = 1./nj;
-        const Real dz = 1./nk;
-        Vector<Real> d(nm*nk*nj*ni, 0.0);
+        const int ncells = 100;
+        const double dx = 1.0/ncells;
+        FArrayBox fab{Box{IntVect{0},IntVect{ncells-1}},1};
+        fab.setVal(0.0);
+        const auto& a = fab.array();
+        const auto lo = lbound(fab.box());
+        const auto hi = ubound(fab.box());
 
         if (use_fortran_parser)
         {
@@ -43,64 +43,51 @@ int main(int argc, char* argv[])
             {
                 TinyProfiler tp("F");
                 Real xyz[3];
-                for (int m = 0; m < nm; ++m) {
-                    Real t = m*1.e-10;
-                    for (int k = 0; k < nk; ++k) {
-                        xyz[2] = (k+0.5)*dz - 0.5;
-                        for (int j = 0; j < nj; ++j) {
-                            xyz[1] = (j+0.5)*dy - 0.5;
-                            for (int i = 0; i < ni; ++i) {
-                                xyz[0] = (i+0.5)*dx - 0.5;
-                                size_t pos = i + j*ni + k*(ni*nj) + m*static_cast<size_t>(ni*nj*nk);
-                                d[pos] = parser_evaluate_function(xyz, 3, parser_instance_number);
-                            }
+                for         (int k = lo.z; k <= hi.z; ++k) {
+                    xyz[2]         = (k+0.5)*dx - 0.5;
+                    for     (int j = lo.y; j <= hi.y; ++j) {
+                        xyz[1]     = (j+0.5)*dx - 0.5;
+                        for (int i = lo.x; i <= hi.x; ++i) {
+                            xyz[0] = (i+0.5)*dx - 0.5;
+                            a(i,j,k) = parser_evaluate_function(xyz, 3, parser_instance_number);
                         }
                     }
                 }
             }
             
-            Real tot = 0.0;
-            for (Real t : d) {
-                tot += t;
-            }
-            amrex::Print().SetPrecision(17) << " F Total is " << tot << "\n";
+            amrex::Print().SetPrecision(17) << " F Total is " << fab.sum(0) << "\n";
         }
 
         {
             // C
-            WarpXParser parser(expr, var);
+            WarpXParser parser(expr);
             {
                 TinyProfiler tp("C");
-                for (int m = 0; m < nm; ++m) {
-                    Real t = m*1.e-10;
 #ifdef _OPENMP
 #pragma omp parallel
 #endif
-                    {
-                        Real xyz[3];
+                {
+                    Real x, y, z;
+                    parser.registerVariable("x",x);
+                    parser.registerVariable("y",y);
+                    parser.registerVariable("z",z);
 #ifdef _OPENMP
 #pragma omp for
 #endif
-                        for (int k = 0; k < nk; ++k) {
-                            xyz[2] = (k+0.5)*dz - 0.5;
-                            for (int j = 0; j < nj; ++j) {
-                                xyz[1] = (j+0.5)*dy - 0.5;
-                                for (int i = 0; i < ni; ++i) {
-                                    xyz[0] = (i+0.5)*dx - 0.5;
-                                    size_t pos = i + j*ni + k*(ni*nj) + m*static_cast<size_t>(ni*nj*nk);
-                                    d[pos] = parser.eval(xyz);
-                                }
+                    for         (int k = lo.z; k <= hi.z; ++k) {
+                        z         = (k+0.5)*dx - 0.5;
+                        for     (int j = lo.y; j <= hi.y; ++j) {
+                            y     = (j+0.5)*dx - 0.5;
+                            for (int i = lo.x; i <= hi.x; ++i) {
+                                x = (i+0.5)*dx - 0.5;
+                                a(i,j,k) = parser.eval();
                             }
                         }
                     }
                 }
             }
             
-            Real tot = 0.0;
-            for (Real t : d) {
-                tot += t;
-            }
-            amrex::Print().SetPrecision(17) << " C Total is " << tot << "\n";
+            amrex::Print().SetPrecision(17) << " C Total is " << fab.sum(0) << "\n";
         }
     }
     amrex::Finalize();

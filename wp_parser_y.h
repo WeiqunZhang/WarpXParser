@@ -25,17 +25,15 @@ enum wp_f2_t {  // Built-in functions with two arguments
 };
 
 enum wp_node_t {
-    WP_NUM = 1,
-    WP_LIST = 2,
-    WP_SYMREF = 3,
-    WP_ADD = 4,
-    WP_SUB = 5,
-    WP_MUL = 6,
-    WP_DIV = 7,
-    WP_NEG = 8,
-    WP_F1 = 9,
-    WP_F2 = 10,
-    WP_LAMBDA = 11
+    WP_NUMBER = 1,
+    WP_SYMBOL,
+    WP_ADD,
+    WP_SUB,
+    WP_MUL,
+    WP_DIV,
+    WP_NEG,
+    WP_F1,
+    WP_F2
 };
 
 struct wp_node {
@@ -44,9 +42,15 @@ struct wp_node {
     struct wp_node* r;
 };
 
-struct wp_num {
+struct wp_number {
     enum wp_node_t type;
     double value;
+};
+
+struct wp_symbol {
+    enum wp_node_t type;
+    char* name;
+    double* pointer;
 };
 
 struct wp_f1 {  /* Builtin functions with one argument */
@@ -62,46 +66,20 @@ struct wp_f2 {  /* Builtin functions with two arguments */
     enum wp_f2_t ftype;
 };
 
-struct wp_lambda {
-    enum wp_node_t type;
-    struct wp_symlist* args;
-    struct wp_node* body;
-};
+/*******************************************************************/
 
-#define WP_MAXLEN_NAME 8
+void wp_defexpr (struct wp_node* body);
+struct wp_node* wp_newnumber (double d);
+struct wp_symbol* wp_makesymbol (char* name);
+struct wp_node* wp_newsymbol (struct wp_symbol* sym);
+struct wp_node* wp_newnode (enum wp_node_t type, struct wp_node* l,
+                            struct wp_node* r);
+struct wp_node* wp_newf1 (enum wp_f1_t ftype, struct wp_node* l);
+struct wp_node* wp_newf2 (enum wp_f2_t ftype, struct wp_node* l,
+                          struct wp_node* r);
 
-struct wp_symbol {
-    char name[WP_MAXLEN_NAME];
-    double value;
-};
-
-struct wp_symlist {
-    struct wp_symbol* sym;
-    struct wp_symlist* next;
-};
-
-struct wp_symref {
-    enum wp_node_t type;
-    struct wp_symbol* s;
-};
-
-double wp_evallambda (struct wp_node* args);
-double wp_eval (struct wp_node* node);
 double wp_callf1 (struct wp_f1* f1);
 double wp_callf2 (struct wp_f2* f2);
-
-void wp_deflambda (struct wp_symlist* parms, struct wp_node* body);
-
-struct wp_node* wp_newnum (double d);
-struct wp_node* wp_newnode (enum wp_node_t type, struct wp_node* l, struct wp_node* r);
-struct wp_node* wp_newf1 (enum wp_f1_t ftype, struct wp_node* l);
-struct wp_node* wp_newf2 (enum wp_f2_t ftype, struct wp_node* l, struct wp_node* r);
-struct wp_node* wp_newsymref (struct wp_symbol* s);
-struct wp_symlist* wp_newsymlist (struct wp_symbol* sym, struct wp_symlist* next);
-
-void wp_freesymlist (struct wp_symlist* symlist);
-
-struct wp_symbol* wp_lookup (char* name);
 
 extern int yylineno; /* from lexer */
 void yyerror (char *s, ...);
@@ -111,22 +89,25 @@ void yyerror (char *s, ...);
 struct wp_parser {
     void* p_root;
     void* p_free;
-    struct wp_symbol* args;
     struct wp_node* ast;
-    int nargs;
     size_t sz_mempool;
 };
-void wp_parser_init (struct wp_parser* my_parser, size_t N, struct wp_symlist* args);
-void wp_parser_finalize (void* parser);
+
+void* wp_parser_new (void);
+void wp_parser_delete (void* parser);
 void* wp_parser_allocate (struct wp_parser* my_parser, size_t N);
 
-double wp_parser_eval (void* parser, double const* da);
-void* wp_parser_new (void);
-void wp_parser_optimize (void* parser);
-void wp_parser_astopt (struct wp_node* node);
-void* wp_parser_dup (void* orig_parser);
-size_t wp_parser_size (struct wp_node* node);
-struct wp_node* wp_parser_astdup (struct wp_parser* parser, struct wp_node* src, int move);
-struct wp_symbol* wp_parser_lookup (struct wp_parser* parser, char* name);
+void* wp_parser_dup (struct wp_parser* source);
+struct wp_node* wp_parser_ast_dup (struct wp_parser* parser, struct wp_node* src, int move);
+
+double wp_ast_eval (struct wp_node* node);
+void wp_ast_optimize (struct wp_node* node);
+size_t wp_ast_size (struct wp_node* node);
+void wp_ast_regvar (struct wp_node* node, char const* name, double* p);
+void wp_ast_setconst (struct wp_node* node, char const* name, double c);
+
+double wp_parser_eval (void* parser);
+void wp_parser_regvar (struct wp_parser* parser, char const* name, double* p);
+void wp_parser_setconst (struct wp_parser* parser, char const* name, double c);
 
 #endif
