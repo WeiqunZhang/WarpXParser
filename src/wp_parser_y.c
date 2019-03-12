@@ -8,6 +8,10 @@
 
 static struct wp_node* wp_root = NULL;
 
+/* This is called by a bison rule to store the original AST in a
+ * static variable.  Accessing this directly is not thread safe.  So
+ * this will be duplicated later for each thread.
+ */
 void
 wp_defexpr (struct wp_node* body)
 {
@@ -119,6 +123,7 @@ wp_aligned_size (size_t N)
     return x;
 }
 
+static
 void*
 wp_parser_allocate (struct wp_parser* my_parser, size_t N)
 {
@@ -347,6 +352,10 @@ wp_parser_ast_dup (struct wp_parser* my_parser, struct wp_node* node, int move)
         exit(1);
     }
     if (move) {
+        /* Note that we only do this on the original AST.  We do not
+         * need to call free for AST stored in wp_parser because the
+         * memory is not allocated with malloc directly.
+         */
         if (node->type == WP_SYMBOL) {
             free(((struct wp_symbol*)node)->name);
         }
@@ -358,7 +367,9 @@ wp_parser_ast_dup (struct wp_parser* my_parser, struct wp_node* node, int move)
 void
 wp_ast_optimize (struct wp_node* node)
 {
-    // no need to free because they are allocated from the pool
+    /* No need to free memory because we only call this on ASTs in
+     * wp_parser that are allocated from the memory pool.
+     */
     switch (node->type)
     {
     case WP_NUMBER:

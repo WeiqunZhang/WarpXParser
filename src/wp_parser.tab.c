@@ -121,7 +121,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 12 "wp_parser.y" /* yacc.c:355  */
+#line 19 "wp_parser.y" /* yacc.c:355  */
 
     struct wp_node* n;
     double d;
@@ -444,8 +444,8 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    45,    45,    46,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64
+       0,    58,    58,    59,    68,    69,    70,    71,    72,    73,
+      74,    75,    76,    77,    78,    79,    80
 };
 #endif
 
@@ -1243,7 +1243,7 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 46 "wp_parser.y" /* yacc.c:1646  */
+#line 59 "wp_parser.y" /* yacc.c:1646  */
     {
     wp_defexpr((yyvsp[-1].n));
   }
@@ -1251,79 +1251,79 @@ yyreduce:
     break;
 
   case 4:
-#line 52 "wp_parser.y" /* yacc.c:1646  */
+#line 68 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newnumber((yyvsp[0].d)); }
 #line 1257 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 53 "wp_parser.y" /* yacc.c:1646  */
+#line 69 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newsymbol((yyvsp[0].s)); }
 #line 1263 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 54 "wp_parser.y" /* yacc.c:1646  */
+#line 70 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newnode(WP_ADD, (yyvsp[-2].n), (yyvsp[0].n)); }
 #line 1269 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 55 "wp_parser.y" /* yacc.c:1646  */
+#line 71 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newnode(WP_SUB, (yyvsp[-2].n), (yyvsp[0].n)); }
 #line 1275 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 56 "wp_parser.y" /* yacc.c:1646  */
+#line 72 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newnode(WP_MUL, (yyvsp[-2].n), (yyvsp[0].n)); }
 #line 1281 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 57 "wp_parser.y" /* yacc.c:1646  */
+#line 73 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newnode(WP_DIV, (yyvsp[-2].n), (yyvsp[0].n)); }
 #line 1287 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 58 "wp_parser.y" /* yacc.c:1646  */
+#line 74 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = (yyvsp[-1].n); }
 #line 1293 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 59 "wp_parser.y" /* yacc.c:1646  */
+#line 75 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newf2(WP_LT, (yyvsp[-2].n), (yyvsp[0].n)); }
 #line 1299 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 60 "wp_parser.y" /* yacc.c:1646  */
+#line 76 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newf2(WP_GT, (yyvsp[-2].n), (yyvsp[0].n)); }
 #line 1305 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 61 "wp_parser.y" /* yacc.c:1646  */
+#line 77 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newnode(WP_NEG, (yyvsp[0].n), NULL); }
 #line 1311 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 62 "wp_parser.y" /* yacc.c:1646  */
+#line 78 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newf2(WP_POW, (yyvsp[-2].n), (yyvsp[0].n)); }
 #line 1317 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 63 "wp_parser.y" /* yacc.c:1646  */
+#line 79 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newf1((yyvsp[-3].f1), (yyvsp[-1].n)); }
 #line 1323 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 64 "wp_parser.y" /* yacc.c:1646  */
+#line 80 "wp_parser.y" /* yacc.c:1646  */
     { (yyval.n) = wp_newf2((yyvsp[-5].f2), (yyvsp[-3].n), (yyvsp[-1].n)); }
 #line 1329 "wp_parser.tab.c" /* yacc.c:1646  */
     break;
@@ -1557,5 +1557,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 67 "wp_parser.y" /* yacc.c:1906  */
+#line 83 "wp_parser.y" /* yacc.c:1906  */
 

@@ -4,10 +4,14 @@
 #include "wp_parser.tab.h"
 %}
 
+ /* Tokens NUMBER, SYMBOL, F1, POW, F2, etc. are defined in wp_parser.y. */
+ /* Types WP_SQRT, WP_SQRT, etc. are defined in wp_parser_y.h. */
+
+ /* Used leater to define NUMBER */
 EXP	([Ee][-+]?[0-9]+)
 
 %%
- /* operators */
+
 "+" |
 "-" |
 "*" |
@@ -18,7 +22,10 @@ EXP	([Ee][-+]?[0-9]+)
 "<" |
 ">" |
 "(" |
-")"     { return yytext[0]; }
+")"     { return yytext[0]; } /* simply pass through */
+
+ /* yylval is union type defined in wp_parser.tab.h that is generated
+  * by bison with wp_parser.y */
 
 "sqrt"        { yylval.f1 = WP_SQRT;      return F1; }
 "exp"         { yylval.f1 = WP_EXP;       return F1; }
@@ -34,17 +41,19 @@ EXP	([Ee][-+]?[0-9]+)
 "cosh"        { yylval.f1 = WP_COSH;      return F1; }
 "tanh"        { yylval.f1 = WP_TANH;      return F1; }
 "abs"         { yylval.f1 = WP_ABS;       return F1; }
+"fabs"        { yylval.f1 = WP_ABS;       return F1; }
 "**"          { yylval.f2 = WP_POW;       return POW;}
 "pow"         { yylval.f2 = WP_POW;       return F2; }
 "heaviside"   { yylval.f1 = WP_HEAVISIDE; return F2; }
 
+ /* We use SYMBOL to hold variables and constants */
 [a-zA-Z][a-zA-Z0-9]*  { yylval.s = wp_makesymbol(yytext); return SYMBOL; }
 
- /* number */
+ /* Number */
 [0-9]+"."[0-9]*{EXP}? |
 "."?[0-9]+{EXP}?  { yylval.d = atof(yytext);   return NUMBER; }
 
- /* special characters */
+ /* Special characters */
 "//".*  
 [ \t]   /* ignore white space */ 
 \\\n    /* ignore line continuation */

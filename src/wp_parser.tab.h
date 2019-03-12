@@ -61,7 +61,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 12 "wp_parser.y" /* yacc.c:1909  */
+#line 19 "wp_parser.y" /* yacc.c:1909  */
 
     struct wp_node* n;
     double d;

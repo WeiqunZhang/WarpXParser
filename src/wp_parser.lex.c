@@ -379,8 +379,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 37
-#define YY_END_OF_BUFFER 38
+#define YY_NUM_RULES 38
+#define YY_END_OF_BUFFER 39
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -388,17 +388,17 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[85] =
+static yyconst flex_int16_t yy_accept[89] =
     {   0,
-        0,    0,   38,   36,   33,   35,   10,   11,    3,    1,
-        7,    2,   36,    4,   31,    8,    5,    9,   29,   36,
-       29,   29,   29,   29,   29,   29,   29,   29,    6,   26,
-       31,   32,   30,   31,    0,   29,   34,   29,   29,   29,
-       29,   29,   29,   29,   29,   29,   29,   29,   29,   32,
-       30,    0,    0,   31,   25,   29,   29,   29,   17,   13,
-       29,   14,   27,   16,   29,   18,    0,   30,   20,   19,
-       21,   23,   29,   29,   22,   12,   24,   29,   15,   29,
-       29,   29,   28,    0
+        0,    0,   39,   37,   34,   36,   10,   11,    3,    1,
+        7,    2,   37,    4,   32,    8,    5,    9,   30,   37,
+       30,   30,   30,   30,   30,   30,   30,   30,   30,    6,
+       27,   32,   33,   31,   32,    0,   30,   35,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   30,   30,   30,
+       30,   33,   31,    0,    0,   32,   25,   30,   30,   30,
+       17,   13,   30,   30,   14,   28,   16,   30,   18,    0,
+       31,   20,   19,   21,   23,   26,   30,   30,   22,   12,
+       24,   30,   15,   30,   30,   30,   29,    0
     } ;
 
 static yyconst YY_CHAR yy_ec[256] =
@@ -414,9 +414,9 @@ static yyconst YY_CHAR yy_ec[256] =
        18,   18,   18,   18,   18,   18,   18,   18,   18,   18,
         1,   20,    1,    1,    1,    1,   21,   22,   23,   24,
 
-       25,   18,   26,   27,   28,   18,   18,   29,   18,   30,
-       31,   32,   33,   34,   35,   36,   18,   37,   38,   39,
-       18,   18,    1,   40,    1,    1,    1,    1,    1,    1,
+       25,   26,   27,   28,   29,   18,   18,   30,   18,   31,
+       32,   33,   34,   35,   36,   37,   18,   38,   39,   40,
+       18,   18,    1,   41,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -433,84 +433,87 @@ static yyconst YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst YY_CHAR yy_meta[41] =
+static yyconst YY_CHAR yy_meta[42] =
     {   0,
         1,    1,    2,    1,    1,    1,    1,    1,    1,    1,
         1,    3,    3,    3,    1,    1,    1,    3,    3,    1,
         3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
-        3,    3,    3,    3,    3,    3,    3,    3,    3,    1
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        1
     } ;
 
-static yyconst flex_uint16_t yy_base[87] =
+static yyconst flex_uint16_t yy_base[91] =
     {   0,
-        0,    0,  132,  133,  133,  133,  133,  133,  125,  133,
-      133,  133,   29,  119,   34,  133,  133,  133,    0,  126,
-       27,   97,   88,  101,   94,   93,   23,  102,  133,  133,
-       52,    0,   55,    0,   69,    0,  133,   87,   90,   92,
-       98,   83,   85,   95,   89,   76,   83,   77,   66,    0,
-       72,   80,   86,   89,    0,   60,   60,   58,   52,    0,
-       38,   60,    0,   45,   34,   34,   92,   95,    0,    0,
-        0,    0,   32,   46,    0,    0,    0,   22,    0,   27,
-       30,   27,    0,  133,   42,  109
+        0,    0,  142,  143,  143,  143,  143,  143,  135,  143,
+      143,  143,   30,  129,   35,  143,  143,  143,    0,  136,
+       28,  106,   97,  115,  110,  102,  101,   23,  111,  143,
+      143,   49,    0,   57,   65,   74,    0,  143,   95,   98,
+      100,  107,   91,   93,  103,  103,   96,   83,   90,   85,
+       87,    0,   79,   87,   93,   96,    0,   67,   71,   66,
+       67,    0,   53,   47,   67,    0,   45,   35,   39,   99,
+      102,    0,    0,    0,    0,    0,   37,   47,    0,    0,
+        0,   22,    0,   27,   31,   28,    0,  143,   43,  116
     } ;
 
-static yyconst flex_int16_t yy_def[87] =
+static yyconst flex_int16_t yy_def[91] =
     {   0,
-       84,    1,   84,   84,   84,   84,   84,   84,   84,   84,
-       84,   84,   84,   84,   84,   84,   84,   84,   85,   84,
-       85,   85,   85,   85,   85,   85,   85,   85,   84,   84,
-       84,   86,   84,   15,   84,   85,   84,   85,   85,   85,
-       85,   85,   85,   85,   85,   85,   85,   85,   85,   86,
-       84,   84,   84,   84,   85,   85,   85,   85,   85,   85,
-       85,   85,   85,   85,   85,   85,   84,   84,   85,   85,
-       85,   85,   85,   85,   85,   85,   85,   85,   85,   85,
-       85,   85,   85,    0,   84,   84
+       88,    1,   88,   88,   88,   88,   88,   88,   88,   88,
+       88,   88,   88,   88,   88,   88,   88,   88,   89,   88,
+       89,   89,   89,   89,   89,   89,   89,   89,   89,   88,
+       88,   88,   90,   88,   88,   88,   89,   88,   89,   89,
+       89,   89,   89,   89,   89,   89,   89,   89,   89,   89,
+       89,   90,   88,   88,   88,   88,   89,   89,   89,   89,
+       89,   89,   89,   89,   89,   89,   89,   89,   89,   88,
+       88,   89,   89,   89,   89,   89,   89,   89,   89,   89,
+       89,   89,   89,   89,   89,   89,   89,    0,   88,   88
     } ;
 
-static yyconst flex_uint16_t yy_nxt[174] =
+static yyconst flex_uint16_t yy_nxt[185] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
        14,   15,   15,   15,   16,   17,   18,   19,   19,   20,
-       21,   19,   22,   19,   23,   19,   24,   19,   25,   19,
-       19,   26,   19,   19,   27,   28,   19,   19,   19,   29,
-       31,   31,   31,   33,   36,   34,   34,   34,   38,   39,
-       47,   83,   35,   82,   81,   48,   80,   79,   35,   78,
-       77,   40,   41,   31,   31,   31,   51,   51,   51,   76,
-       35,   75,   74,   52,   73,   53,   35,   53,   72,   52,
-       54,   54,   54,   51,   51,   51,   67,   71,   67,   70,
-       52,   68,   68,   68,   69,   66,   52,   54,   54,   54,
+       21,   19,   22,   19,   23,   24,   19,   25,   19,   26,
+       19,   19,   27,   19,   19,   28,   29,   19,   19,   19,
+       30,   32,   32,   32,   34,   37,   35,   35,   35,   39,
+       40,   49,   87,   36,   86,   85,   50,   84,   83,   36,
+       32,   32,   32,   41,   42,   82,   81,   36,   53,   53,
+       53,   80,   79,   36,   34,   54,   35,   35,   35,   78,
+       55,   54,   55,   36,   77,   56,   56,   56,   76,   36,
+       53,   53,   53,   70,   75,   70,   74,   54,   71,   71,
 
-       54,   54,   54,   68,   68,   68,   68,   68,   68,   50,
-       65,   50,   64,   63,   62,   61,   60,   59,   58,   57,
-       56,   55,   49,   46,   45,   44,   43,   42,   37,   32,
-       30,   84,    3,   84,   84,   84,   84,   84,   84,   84,
-       84,   84,   84,   84,   84,   84,   84,   84,   84,   84,
-       84,   84,   84,   84,   84,   84,   84,   84,   84,   84,
-       84,   84,   84,   84,   84,   84,   84,   84,   84,   84,
-       84,   84,   84
+       71,   73,   72,   54,   56,   56,   56,   56,   56,   56,
+       71,   71,   71,   71,   71,   71,   52,   69,   52,   68,
+       67,   66,   65,   64,   63,   62,   61,   60,   59,   58,
+       57,   51,   48,   47,   46,   45,   44,   43,   38,   33,
+       31,   88,    3,   88,   88,   88,   88,   88,   88,   88,
+       88,   88,   88,   88,   88,   88,   88,   88,   88,   88,
+       88,   88,   88,   88,   88,   88,   88,   88,   88,   88,
+       88,   88,   88,   88,   88,   88,   88,   88,   88,   88,
+       88,   88,   88,   88
     } ;
 
-static yyconst flex_int16_t yy_chk[174] =
+static yyconst flex_int16_t yy_chk[185] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       13,   13,   13,   15,   85,   15,   15,   15,   21,   21,
-       27,   82,   15,   81,   80,   27,   78,   74,   15,   73,
-       66,   21,   21,   31,   31,   31,   33,   33,   33,   65,
-       31,   64,   62,   33,   61,   35,   31,   35,   59,   33,
-       35,   35,   35,   51,   51,   51,   52,   58,   52,   57,
-       51,   52,   52,   52,   56,   49,   51,   53,   53,   53,
+        1,   13,   13,   13,   15,   89,   15,   15,   15,   21,
+       21,   28,   86,   15,   85,   84,   28,   82,   78,   15,
+       32,   32,   32,   21,   21,   77,   69,   32,   34,   34,
+       34,   68,   67,   32,   35,   34,   35,   35,   35,   65,
+       36,   34,   36,   35,   64,   36,   36,   36,   63,   35,
+       53,   53,   53,   54,   61,   54,   60,   53,   54,   54,
 
-       54,   54,   54,   67,   67,   67,   68,   68,   68,   86,
-       48,   86,   47,   46,   45,   44,   43,   42,   41,   40,
-       39,   38,   28,   26,   25,   24,   23,   22,   20,   14,
-        9,    3,   84,   84,   84,   84,   84,   84,   84,   84,
-       84,   84,   84,   84,   84,   84,   84,   84,   84,   84,
-       84,   84,   84,   84,   84,   84,   84,   84,   84,   84,
-       84,   84,   84,   84,   84,   84,   84,   84,   84,   84,
-       84,   84,   84
+       54,   59,   58,   53,   55,   55,   55,   56,   56,   56,
+       70,   70,   70,   71,   71,   71,   90,   51,   90,   50,
+       49,   48,   47,   46,   45,   44,   43,   42,   41,   40,
+       39,   29,   27,   26,   25,   24,   23,   22,   20,   14,
+        9,    3,   88,   88,   88,   88,   88,   88,   88,   88,
+       88,   88,   88,   88,   88,   88,   88,   88,   88,   88,
+       88,   88,   88,   88,   88,   88,   88,   88,   88,   88,
+       88,   88,   88,   88,   88,   88,   88,   88,   88,   88,
+       88,   88,   88,   88
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -531,7 +534,10 @@ char *yytext;
 #line 3 "wp_parser.l"
 #include "wp_parser_y.h"
 #include "wp_parser.tab.h"
-#line 535 "wp_parser.lex.c"
+/* Tokens NUMBER, SYMBOL, F1, POW, F2, etc. are defined in wp_parser.y. */
+/* Types WP_SQRT, WP_SQRT, etc. are defined in wp_parser_y.h. */
+/* Used leater to define NUMBER */
+#line 541 "wp_parser.lex.c"
 
 #define INITIAL 0
 
@@ -749,10 +755,10 @@ YY_DECL
 		}
 
 	{
-#line 9 "wp_parser.l"
+#line 13 "wp_parser.l"
 
- /* operators */
-#line 756 "wp_parser.lex.c"
+
+#line 762 "wp_parser.lex.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -779,13 +785,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 85 )
+				if ( yy_current_state >= 89 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 133 );
+		while ( yy_base[yy_current_state] != 143 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -810,163 +816,171 @@ do_action:	/* This label is used only to access EOF actions. */
 			goto yy_find_action;
 
 case 1:
-#line 12 "wp_parser.l"
-case 2:
-#line 13 "wp_parser.l"
-case 3:
-#line 14 "wp_parser.l"
-case 4:
-#line 15 "wp_parser.l"
-case 5:
 #line 16 "wp_parser.l"
-case 6:
+case 2:
 #line 17 "wp_parser.l"
-case 7:
+case 3:
 #line 18 "wp_parser.l"
-case 8:
+case 4:
 #line 19 "wp_parser.l"
-case 9:
+case 5:
 #line 20 "wp_parser.l"
-case 10:
+case 6:
 #line 21 "wp_parser.l"
+case 7:
+#line 22 "wp_parser.l"
+case 8:
+#line 23 "wp_parser.l"
+case 9:
+#line 24 "wp_parser.l"
+case 10:
+#line 25 "wp_parser.l"
 case 11:
 YY_RULE_SETUP
-#line 21 "wp_parser.l"
-{ return yytext[0]; }
+#line 25 "wp_parser.l"
+{ return yytext[0]; } /* simply pass through */
 	YY_BREAK
+/* yylval is union type defined in wp_parser.tab.h that is generated
+  * by bison with wp_parser.y */
 case 12:
 YY_RULE_SETUP
-#line 23 "wp_parser.l"
+#line 30 "wp_parser.l"
 { yylval.f1 = WP_SQRT;      return F1; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 24 "wp_parser.l"
+#line 31 "wp_parser.l"
 { yylval.f1 = WP_EXP;       return F1; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 25 "wp_parser.l"
+#line 32 "wp_parser.l"
 { yylval.f1 = WP_LOG;       return F1; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 26 "wp_parser.l"
+#line 33 "wp_parser.l"
 { yylval.f1 = WP_LOG10;     return F1; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 27 "wp_parser.l"
+#line 34 "wp_parser.l"
 { yylval.f1 = WP_SIN;       return F1; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 28 "wp_parser.l"
+#line 35 "wp_parser.l"
 { yylval.f1 = WP_COS;       return F1; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 29 "wp_parser.l"
+#line 36 "wp_parser.l"
 { yylval.f1 = WP_TAN;       return F1; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 30 "wp_parser.l"
+#line 37 "wp_parser.l"
 { yylval.f1 = WP_ASIN;      return F1; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 31 "wp_parser.l"
+#line 38 "wp_parser.l"
 { yylval.f1 = WP_ACOS;      return F1; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 32 "wp_parser.l"
+#line 39 "wp_parser.l"
 { yylval.f1 = WP_ATAN;      return F1; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 33 "wp_parser.l"
+#line 40 "wp_parser.l"
 { yylval.f1 = WP_SINH;      return F1; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 34 "wp_parser.l"
+#line 41 "wp_parser.l"
 { yylval.f1 = WP_COSH;      return F1; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 35 "wp_parser.l"
+#line 42 "wp_parser.l"
 { yylval.f1 = WP_TANH;      return F1; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 36 "wp_parser.l"
+#line 43 "wp_parser.l"
 { yylval.f1 = WP_ABS;       return F1; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 37 "wp_parser.l"
-{ yylval.f2 = WP_POW;       return POW;}
+#line 44 "wp_parser.l"
+{ yylval.f1 = WP_ABS;       return F1; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 38 "wp_parser.l"
-{ yylval.f2 = WP_POW;       return F2; }
+#line 45 "wp_parser.l"
+{ yylval.f2 = WP_POW;       return POW;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 39 "wp_parser.l"
-{ yylval.f1 = WP_HEAVISIDE; return F2; }
+#line 46 "wp_parser.l"
+{ yylval.f2 = WP_POW;       return F2; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 41 "wp_parser.l"
-{ yylval.s = wp_makesymbol(yytext); return SYMBOL; }
+#line 47 "wp_parser.l"
+{ yylval.f1 = WP_HEAVISIDE; return F2; }
 	YY_BREAK
-/* number */
+/* We use SYMBOL to hold variables and constants */
 case 30:
-#line 45 "wp_parser.l"
-case 31:
-YY_RULE_SETUP
-#line 45 "wp_parser.l"
-{ yylval.d = atof(yytext);   return NUMBER; }
-	YY_BREAK
-/* special characters */
-case 32:
-YY_RULE_SETUP
-#line 48 "wp_parser.l"
-
-	YY_BREAK
-case 33:
-YY_RULE_SETUP
-#line 49 "wp_parser.l"
-/* ignore white space */ 
-	YY_BREAK
-case 34:
-/* rule 34 can match eol */
 YY_RULE_SETUP
 #line 50 "wp_parser.l"
-/* ignore line continuation */
+{ yylval.s = wp_makesymbol(yytext); return SYMBOL; }
+	YY_BREAK
+/* Number */
+case 31:
+#line 54 "wp_parser.l"
+case 32:
+YY_RULE_SETUP
+#line 54 "wp_parser.l"
+{ yylval.d = atof(yytext);   return NUMBER; }
+	YY_BREAK
+/* Special characters */
+case 33:
+YY_RULE_SETUP
+#line 57 "wp_parser.l"
+
+	YY_BREAK
+case 34:
+YY_RULE_SETUP
+#line 58 "wp_parser.l"
+/* ignore white space */ 
 	YY_BREAK
 case 35:
 /* rule 35 can match eol */
 YY_RULE_SETUP
-#line 51 "wp_parser.l"
+#line 59 "wp_parser.l"
+/* ignore line continuation */
+	YY_BREAK
+case 36:
+/* rule 36 can match eol */
+YY_RULE_SETUP
+#line 60 "wp_parser.l"
 { return EOL; }
 	YY_BREAK
 /* everything else */
-case 36:
-YY_RULE_SETUP
-#line 54 "wp_parser.l"
-{ yyerror("Unknow character %c\n", *yytext); }
-	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 56 "wp_parser.l"
+#line 63 "wp_parser.l"
+{ yyerror("Unknow character %c\n", *yytext); }
+	YY_BREAK
+case 38:
+YY_RULE_SETUP
+#line 65 "wp_parser.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 970 "wp_parser.lex.c"
+#line 984 "wp_parser.lex.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1259,7 +1273,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 85 )
+			if ( yy_current_state >= 89 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1287,11 +1301,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 85 )
+		if ( yy_current_state >= 89 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 84);
+	yy_is_jam = (yy_current_state == 88);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1967,7 +1981,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 56 "wp_parser.l"
+#line 65 "wp_parser.l"
 
 
 

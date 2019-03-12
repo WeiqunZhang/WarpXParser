@@ -7,8 +7,15 @@
     int yylex (void);
 %}
 
+/* We do not need to make this reentrant safe, because we use flex and
+   bison for generating AST only and this part doesn't need to be
+   thread safe.
+*/
 /*%define api.pure full */
 
+/* This is the type returned by functions wp_new* declared in
+   wp_parser_y.h.  See also bison rules at the end of this file.
+*/
 %union {
     struct wp_node* n;
     double d;
@@ -17,13 +24,13 @@
     enum wp_f2_t f2;
 }
 
+/* Define tokens.  They are used by flex too. */
 %token <n>  NODE
 %token <d>  NUMBER
 %token <s>  SYMBOL
 %token <f1> F1
 %token <f2> F2
 %token EOL
-
 %token POW "**"
 
 %nonassoc F1 F2
@@ -34,13 +41,19 @@
 %nonassoc NEG
 %right POW
 
-/* The type of expression are struct wp_node* */
+/* This specifies the type of `exp` (i.e., struct wp_node*).  Rules
+   specified later pass `exp` to wp_new* functions declared in
+   wp_parser_y.h.
+*/
 %type <n> exp
 
 %start input
 
 %%
 
+/* Given `\n` terminated input, a tree is generated and passed to
+ * function wp_defexpr defined in wp_parser_y.c.
+ */
 input:
   %empty
 | input exp EOL {
@@ -48,6 +61,9 @@ input:
   }
 ;
 
+/* Enum types WP_ADD, WP_SUB, etc. are defined in wp_parser_y.h.
+ * Functions wp_new* are also declared in that file.
+ */
 exp:
   NUMBER                     { $$ = wp_newnumber($1); }
 | SYMBOL                     { $$ = wp_newsymbol($1); }
