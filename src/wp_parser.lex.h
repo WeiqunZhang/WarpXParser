@@ -330,7 +330,7 @@ extern int yylex (void);
 #undef YY_DECL
 #endif
 
-#line 67 "wp_parser.l"
+#line 68 "wp_parser.l"
 
 
 #line 337 "wp_parser.lex.h"

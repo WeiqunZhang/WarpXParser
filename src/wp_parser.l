@@ -43,6 +43,7 @@ EXP	([Ee][-+]?[0-9]+)
 "abs"         { yylval.f1 = WP_ABS;       return F1; }
 "fabs"        { yylval.f1 = WP_ABS;       return F1; }
 "**"          { yylval.f2 = WP_POW;       return POW;}
+"^"           { yylval.f2 = WP_POW;       return POW;}
 "pow"         { yylval.f2 = WP_POW;       return F2; }
 "heaviside"   { yylval.f2 = WP_HEAVISIDE; return F2; }
 "min"         { yylval.f2 = WP_MIN;       return F2; }

@@ -31,7 +31,7 @@
 %token <f1> F1
 %token <f2> F2
 %token EOL
-%token POW "**"
+%token POW "**" '^'
 
 %nonassoc F1 F2
 %right '='
