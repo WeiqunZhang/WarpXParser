@@ -29,7 +29,9 @@ enum wp_f2_t {  // Built-in functions with two arguments
     WP_POW = 1,
     WP_GT,
     WP_LT,
-    WP_HEAVISIDE
+    WP_HEAVISIDE,
+    WP_MIN,
+    WP_MAX
 };
 
 enum wp_node_t {

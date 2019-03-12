@@ -186,6 +186,10 @@ wp_callf2 (struct wp_f2* f2)
         return (a < b) ? 1.0 : 0.0;
     case WP_HEAVISIDE:
         return (a < 0.0) ? 0.0 : ((a > 0.0) ? 1.0 : b);
+    case WP_MIN:
+        return (a < b) ? a : b;
+    case WP_MAX:
+        return (a > b) ? a : b;
     default:
         yyerror("wp_callf2: Unknow function %d", f2->ftype);
         return 0.0;

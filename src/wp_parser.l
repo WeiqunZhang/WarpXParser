@@ -44,7 +44,9 @@ EXP	([Ee][-+]?[0-9]+)
 "fabs"        { yylval.f1 = WP_ABS;       return F1; }
 "**"          { yylval.f2 = WP_POW;       return POW;}
 "pow"         { yylval.f2 = WP_POW;       return F2; }
-"heaviside"   { yylval.f1 = WP_HEAVISIDE; return F2; }
+"heaviside"   { yylval.f2 = WP_HEAVISIDE; return F2; }
+"min"         { yylval.f2 = WP_MIN;       return F2; }
+"max"         { yylval.f2 = WP_MAX;       return F2; }
 
  /* We use SYMBOL to hold variables and constants */
 [a-zA-Z][a-zA-Z0-9]*  { yylval.s = wp_makesymbol(yytext); return SYMBOL; }

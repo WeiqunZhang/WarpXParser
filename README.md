@@ -3,10 +3,11 @@
 This code evaluates mathematical expressions given in the form of
 string.  It supports basic operators, `+`, `-`, `*`, `/`, and `**`,
 and basic math functions, `sqrt`, `exp`, `log`, `log10`, `sin`, `cos`,
-`tan`, `asin`, `acos`, `atan`, `sinh`, `cosh`, `tanh`, and `abs`.  It
-also supports Heaviside step function, `heaviside(x1,x2) = 0, x2, 1`,
-for `x1 < 0`, `x1 = 0` and `x1 > 0`, respectively.  OpenMP is
-supported.
+`tan`, `asin`, `acos`, `atan`, `sinh`, `cosh`, `tanh`, and `abs`.  The
+minimum and maximum of two numbers can be computed with `min` and
+`max`, respectively.  It also supports Heaviside step function,
+`heaviside(x1,x2) = 0, x2, 1`, for `x1 < 0`, `x1 = 0` and `x1 > 0`,
+respectively.  OpenMP is supported.
 
 The source files (`.h` `.H`, `.c`, and `.cpp`) are in `src/`
 directory.  The public interface is in `WarpXParser.H`.
