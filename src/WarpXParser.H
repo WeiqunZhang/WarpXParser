@@ -25,7 +25,7 @@ public:
     void registerVariable (std::string const& name, double& var);
     void setConstant (std::string const& name, double c);
 
-    inline double eval () {
+    inline double eval () noexcept {
 #ifdef _OPENMP
         return wp_ast_eval(m_parser[omp_get_thread_num()]->ast);
 #else

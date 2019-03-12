@@ -41,7 +41,11 @@ enum wp_node_t {
     WP_DIV,
     WP_NEG,
     WP_F1,
-    WP_F2
+    WP_F2,
+    WP_ADDR,  /* e.g., 3.0 + x */
+    WP_SUBR,  /* e.g., 3.0 - x */
+    WP_MULR,  /* e.g., 3.0 * x */
+    WP_DIVR   /* e.g., 3.0 / x */
 };
 
 struct wp_node {
@@ -72,6 +76,12 @@ struct wp_f2 {  /* Builtin functions with two arguments */
     struct wp_node* l;
     struct wp_node* r;
     enum wp_f2_t ftype;
+};
+
+struct wp_node_r {
+    enum wp_node_t type;
+    double value;
+    struct wp_node* r;
 };
 
 /*******************************************************************/
