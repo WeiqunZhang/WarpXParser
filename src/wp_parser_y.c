@@ -557,8 +557,8 @@ wp_ast_optimize (struct wp_node* node)
                  node->r->type == WP_NUMBER)
         {
             node->lvp.p = ((struct wp_symbol*)(node->l))->pointer;
-            node->rvp.v = wp_ast_eval(node->r);
-            node->type = WP_DIV_PV;
+            node->rvp.v = 1./wp_ast_eval(node->r);
+            node->type = WP_MUL_PV;
         }
         else if (node->l->type == WP_SYMBOL &&
                  node->r->type == WP_SYMBOL)
@@ -706,6 +706,11 @@ wp_ast_optimize (struct wp_node* node)
             double v = wp_ast_eval(node->l) / node->rvp.v;
             ((struct wp_number*)node)->type = WP_NUMBER;
             ((struct wp_number*)node)->value = v;
+        }
+        else
+        {
+            node->type = WP_MUL_PV;
+            node->rvp.v = 1.0 / node->rvp.v;
         }
         break;
     case WP_NEG_P:
