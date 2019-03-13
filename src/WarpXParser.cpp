@@ -1,7 +1,8 @@
 
 #include "WarpXParser.H"
 
-WarpXParser::WarpXParser (std::string const& func_body)
+WarpXParser::WarpXParser (std::string func_body)
+    : expression(std::move(func_body))
 {
 #ifdef _OPENMP
     int nthreads = omp_get_max_threads();
@@ -10,7 +11,7 @@ WarpXParser::WarpXParser (std::string const& func_body)
 #endif
     m_parser.resize(nthreads);
 
-    std::string f = func_body + "\n";
+    std::string f = expression + "\n";
     m_parser[0] = wp_c_parser_new(f.c_str());
 
 #ifdef _OPENMP
@@ -66,7 +67,7 @@ WarpXParser::setConstant (std::string const& name, double c)
 }
 
 void
-WarpXParser::print ()
+WarpXParser::print () const
 {
 #ifdef _OPENMP
 #pragma omp critical(warpx_parser_pint)
@@ -74,4 +75,10 @@ WarpXParser::print ()
 #else
     wp_ast_print(p0->ast);
 #endif
+}
+
+std::string const&
+WarpXParser::expr () const
+{
+    return expression;
 }

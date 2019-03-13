@@ -17,9 +17,10 @@ class WarpXParser
 private:
     std::vector<struct wp_parser*> m_parser;
     wp_parser* p0;
+    std::string expression;
 
 public:
-    WarpXParser (std::string const& func_body);
+    WarpXParser (std::string func_body);
     ~WarpXParser ();
 
     void registerVariable (std::string const& name, double& var);
@@ -33,7 +34,9 @@ public:
 #endif
     }
 
-    void print ();
+    void print () const;
+
+    std::string const& expr () const;
 };
 
 #endif
