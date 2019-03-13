@@ -266,6 +266,9 @@ wp_ast_eval (struct wp_node* node)
     case WP_DIV_PP:
         result = *(node->lvp.p) / *(node->rvp.p);
         break;
+    case WP_NEG_P:
+        result = -*(node->lvp.p);
+        break;
     default:
         yyerror("wp_ast_eval: unknown node type %d\n", node->type);
     }
@@ -321,6 +324,7 @@ wp_ast_size (struct wp_node* node)
     case WP_SUB_PV:
     case WP_MUL_PV:
     case WP_DIV_PV:
+    case WP_NEG_P:
         result = wp_aligned_size(sizeof(struct wp_node))
             + wp_ast_size(node->l);
         break;
@@ -393,6 +397,7 @@ wp_parser_ast_dup (struct wp_parser* my_parser, struct wp_node* node, int move)
     case WP_SUB_PV:
     case WP_MUL_PV:
     case WP_DIV_PV:
+    case WP_NEG_P:
         result = wp_parser_allocate(my_parser, sizeof(struct wp_node));
         memcpy(result, node                  , sizeof(struct wp_node));
         ((struct wp_node*)result)->l = wp_parser_ast_dup(my_parser, node->l, move);
@@ -565,6 +570,12 @@ wp_ast_optimize (struct wp_node* node)
             ((struct wp_number*)node)->type = WP_NUMBER;
             ((struct wp_number*)node)->value = v;
         }
+        else if (node->l->type == WP_SYMBOL)
+        {
+            node->lvp.p = ((struct wp_symbol*)(node->l))->pointer;
+            node->type = WP_NEG_P;
+        }
+
         break;
     case WP_F1:
         wp_ast_optimize(node->l);
@@ -658,6 +669,15 @@ wp_ast_optimize (struct wp_node* node)
             ((struct wp_number*)node)->value = v;
         }
         break;
+    case WP_NEG_P:
+        wp_ast_optimize(node->l);
+        if (node->l->type == WP_NUMBER)
+        {
+            double v = -wp_ast_eval(node->l);
+            ((struct wp_number*)node)->type = WP_NUMBER;
+            ((struct wp_number*)node)->value = v;
+        }
+        break;
     default:
         yyerror("wp_ast_optimize: unknown node type %d\n", node->type);
         exit(1);
@@ -704,6 +724,7 @@ wp_ast_regvar (struct wp_node* node, char const* name, double* p)
     case WP_SUB_PV:
     case WP_MUL_PV:
     case WP_DIV_PV:
+    case WP_NEG_P:
         wp_ast_regvar(node->l, name, p);
         node->lvp.p = ((struct wp_symbol*)(node->l))->pointer;
         break;
@@ -761,6 +782,7 @@ void wp_ast_setconst (struct wp_node* node, char const* name, double c)
     case WP_SUB_PV:
     case WP_MUL_PV:
     case WP_DIV_PV:
+    case WP_NEG_P:
         wp_ast_setconst(node->l, name, c);
         break;
     case WP_ADD_PP:

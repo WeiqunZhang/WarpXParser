@@ -55,7 +55,8 @@ enum wp_node_t {
     WP_MUL_PP,
     WP_DIV_VP,
     WP_DIV_PV,
-    WP_DIV_PP
+    WP_DIV_PP,
+    WP_NEG_P
 };
 
 /* In C, the address of the first member of a struct is the same as
