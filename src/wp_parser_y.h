@@ -76,8 +76,8 @@ struct wp_node {
     enum wp_node_t type;
     struct wp_node* l;
     struct wp_node* r;
-    union wp_vp lvp;
-    union wp_vp rvp;
+    union wp_vp lvp;  // After optimization, this may store left value/pointer.
+    double* rp;       //                     this may store right      pointer.
 };
 
 struct wp_number {
