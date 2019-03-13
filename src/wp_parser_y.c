@@ -165,6 +165,12 @@ wp_callf1 (struct wp_f1* f1)
     case WP_COSH:        return cosh(a);
     case WP_TANH:        return tanh(a);
     case WP_ABS:         return fabs(a);
+    case WP_POW_M3:      return 1.0/(a*a*a);
+    case WP_POW_M2:      return 1.0/(a*a);
+    case WP_POW_M1:      return 1.0/a;
+    case WP_POW_P1:      return a;
+    case WP_POW_P2:      return a*a;
+    case WP_POW_P3:      return a*a*a;
     default:
         yyerror("wp_callf1: Unknow function %d", f1->ftype);
         return 0.0;
@@ -595,6 +601,39 @@ wp_ast_optimize (struct wp_node* node)
             double v = wp_ast_eval(node);
             ((struct wp_number*)node)->type = WP_NUMBER;
             ((struct wp_number*)node)->value = v;
+        }
+        else if (node->r->type == WP_NUMBER && ((struct wp_f2*)node)->ftype == WP_POW)
+        {
+            struct wp_node* n = node->l;
+            double v = wp_ast_eval(node->r);
+            if (-3.0 == v) {
+                ((struct wp_f1*)node)->type = WP_F1;
+                ((struct wp_f1*)node)->l = n;
+                ((struct wp_f1*)node)->ftype = WP_POW_M3;
+            } else if (-2.0 == v) {
+                ((struct wp_f1*)node)->type = WP_F1;
+                ((struct wp_f1*)node)->l = n;
+                ((struct wp_f1*)node)->ftype = WP_POW_M2;
+            } else if (-1.0 == v) {
+                ((struct wp_f1*)node)->type = WP_F1;
+                ((struct wp_f1*)node)->l = n;
+                ((struct wp_f1*)node)->ftype = WP_POW_M1;
+            } else if (0.0 == v) {
+                ((struct wp_number*)node)->type = WP_NUMBER;
+                ((struct wp_number*)node)->value = 1.0;
+            } else if (1.0 == v) {
+                ((struct wp_f1*)node)->type = WP_F1;
+                ((struct wp_f1*)node)->l = n;
+                ((struct wp_f1*)node)->ftype = WP_POW_P1;
+            } else if (2.0 == v) {
+                ((struct wp_f1*)node)->type = WP_F1;
+                ((struct wp_f1*)node)->l = n;
+                ((struct wp_f1*)node)->ftype = WP_POW_P2;
+            } else if (3.0 == v) {
+                ((struct wp_f1*)node)->type = WP_F1;
+                ((struct wp_f1*)node)->l = n;
+                ((struct wp_f1*)node)->ftype = WP_POW_P3;
+            }
         }
         break;
     case WP_ADD_VP:

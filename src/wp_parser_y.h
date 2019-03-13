@@ -22,7 +22,13 @@ enum wp_f1_t {  // Bulit-in functions with one argument
     WP_SINH,
     WP_COSH,
     WP_TANH,
-    WP_ABS
+    WP_ABS,
+    WP_POW_M3,
+    WP_POW_M2,
+    WP_POW_M1,
+    WP_POW_P1,
+    WP_POW_P2,
+    WP_POW_P3
 };
 
 enum wp_f2_t {  // Built-in functions with two arguments
