@@ -65,3 +65,13 @@ WarpXParser::setConstant (std::string const& name, double c)
 #endif
 }
 
+void
+WarpXParser::print ()
+{
+#ifdef _OPENMP
+#pragma omp critical(warpx_parser_pint)
+    wp_ast_print(m_parser[omp_get_thread_num()]->ast);
+#else
+    wp_ast_print(p0->ast);
+#endif
+}

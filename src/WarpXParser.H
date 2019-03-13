@@ -32,6 +32,8 @@ public:
         return wp_ast_eval(p0->ast);
 #endif
     }
+
+    void print ();
 };
 
 #endif

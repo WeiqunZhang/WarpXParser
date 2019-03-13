@@ -147,7 +147,7 @@ wp_parser_dup (struct wp_parser* source)
 
 static
 double
-wp_callf1 (struct wp_f1* f1)
+wp_call_f1 (struct wp_f1* f1)
 {
     double a = wp_ast_eval(f1->l);
     switch (f1->ftype) {
@@ -172,14 +172,14 @@ wp_callf1 (struct wp_f1* f1)
     case WP_POW_P2:      return a*a;
     case WP_POW_P3:      return a*a*a;
     default:
-        yyerror("wp_callf1: Unknow function %d", f1->ftype);
+        yyerror("wp_call_f1: Unknow function %d", f1->ftype);
         return 0.0;
     }
 }
 
 static
 double
-wp_callf2 (struct wp_f2* f2)
+wp_call_f2 (struct wp_f2* f2)
 {
     double a = wp_ast_eval(f2->l);
     double b = wp_ast_eval(f2->r);
@@ -197,7 +197,7 @@ wp_callf2 (struct wp_f2* f2)
     case WP_MAX:
         return (a > b) ? a : b;
     default:
-        yyerror("wp_callf2: Unknow function %d", f2->ftype);
+        yyerror("wp_call_f2: Unknow function %d", f2->ftype);
         return 0.0;
     }
 }
@@ -231,10 +231,10 @@ wp_ast_eval (struct wp_node* node)
         result = -wp_ast_eval(node->l);
         break;
     case WP_F1:
-        result = wp_callf1((struct wp_f1*)node);
+        result = wp_call_f1((struct wp_f1*)node);
         break;
     case WP_F2:
-        result = wp_callf2((struct wp_f2*)node);
+        result = wp_call_f2((struct wp_f2*)node);
         break;
     case WP_ADD_VP:
         result = node->lvp.v + *(node->rp);
@@ -743,6 +743,145 @@ wp_ast_optimize (struct wp_node* node)
     }
 }
 
+static
+void
+wp_ast_print_f1 (struct wp_f1* f1)
+{
+    wp_ast_print(f1->l);
+    switch (f1->ftype) {
+    case WP_SQRT:        printf("SQRT\n");        break;
+    case WP_EXP:         printf("EXP\n");         break;
+    case WP_LOG:         printf("LOG\n");         break;
+    case WP_LOG10:       printf("LOG10\n");       break;
+    case WP_SIN:         printf("SIN\n");         break;
+    case WP_COS:         printf("COS\n");         break;
+    case WP_TAN:         printf("TAN\n");         break;
+    case WP_ASIN:        printf("ASIN\n");        break;
+    case WP_ACOS:        printf("ACOS\n");        break;
+    case WP_ATAN:        printf("ATAN\n");        break;
+    case WP_SINH:        printf("SINH\n");        break;
+    case WP_COSH:        printf("COSH\n");        break;
+    case WP_TANH:        printf("TANH\n");        break;
+    case WP_ABS:         printf("ABS\n");         break;
+    case WP_POW_M3:      printf("POW(,-3)\n");    break;
+    case WP_POW_M2:      printf("POW(,-2)\n");    break;
+    case WP_POW_M1:      printf("POW(,-1)\n");    break;
+    case WP_POW_P1:      printf("POW(,1)\n");     break;
+    case WP_POW_P2:      printf("POW(,2)\n");     break;
+    case WP_POW_P3:      printf("POW(,3)\n");     break;
+    default:
+        yyerror("wp_ast+print_f1: Unknow function %d", f1->ftype);
+    }
+}
+
+static
+void
+wp_ast_print_f2 (struct wp_f2* f2)
+{
+    wp_ast_print(f2->l);
+    wp_ast_print(f2->r);
+    switch (f2->ftype) {
+    case WP_POW:
+        printf("POW\n");
+        break;
+    case WP_GT:
+        printf("GT\n");
+        break;
+    case WP_LT:
+        printf("LT\n");
+        break;
+    case WP_HEAVISIDE:
+        printf("HEAVISIDE\n");
+        break;
+    case WP_MIN:
+        printf("MIN\n");
+        break;
+    case WP_MAX:
+        printf("MAX\n");
+        break;
+    default:
+        yyerror("wp_ast_print_f2: Unknow function %d", f2->ftype);
+    }
+}
+
+void
+wp_ast_print (struct wp_node* node)
+{
+    switch (node->type)
+    {
+    case WP_NUMBER:
+        printf("NUMBER:  %.17g\n", wp_ast_eval(node));
+        break;
+    case WP_SYMBOL:
+        printf("VARIABLE:  %s\n", ((struct wp_symbol*)node)->name);
+        break;
+    case WP_ADD:
+        wp_ast_print(node->l);
+        wp_ast_print(node->r);
+        printf("ADD\n");
+        break;
+    case WP_SUB:
+        wp_ast_print(node->l);
+        wp_ast_print(node->r);
+        printf("SUB\n");
+        break;
+    case WP_MUL:
+        wp_ast_print(node->l);
+        wp_ast_print(node->r);
+        printf("MUL\n");
+        break;
+    case WP_DIV:
+        wp_ast_print(node->l);
+        wp_ast_print(node->r);
+        printf("DIV\n");
+        break;
+    case WP_NEG:
+        wp_ast_print(node->l);
+        printf("NEG\n");
+        break;
+    case WP_F1:
+        wp_ast_print_f1((struct wp_f1*)node);
+        break;
+    case WP_F2:
+        wp_ast_print_f2((struct wp_f2*)node);
+        break;
+    case WP_ADD_VP:
+        printf("ADD:  %.17g  %s\n", node->lvp.v, ((struct wp_symbol*)(node->r))->name);
+        break;
+    case WP_SUB_VP:
+        printf("SUM:  %.17g  %s\n", node->lvp.v, ((struct wp_symbol*)(node->r))->name);
+        break;
+    case WP_MUL_VP:
+        printf("MUL:  %.17g  %s\n", node->lvp.v, ((struct wp_symbol*)(node->r))->name);
+        break;
+    case WP_DIV_VP:
+        printf("DIV:  %.17g  %s\n", node->lvp.v, ((struct wp_symbol*)(node->r))->name);
+        break;
+    case WP_NEG_P:
+        printf("NEG:  %s\n", ((struct wp_symbol*)(node->l))->name);
+        break;
+    case WP_ADD_PP:
+        printf("ADD:  %s  %s\n", ((struct wp_symbol*)(node->l))->name,
+                                 ((struct wp_symbol*)(node->r))->name);
+        break;
+    case WP_SUB_PP:
+        printf("SUB:  %s  %s\n", ((struct wp_symbol*)(node->l))->name,
+                                 ((struct wp_symbol*)(node->r))->name);
+        break;
+    case WP_MUL_PP:
+        printf("MUL:  %s  %s\n", ((struct wp_symbol*)(node->l))->name,
+                                 ((struct wp_symbol*)(node->r))->name);
+        break;
+    case WP_DIV_PP:
+        printf("DIV:  %s  %s\n", ((struct wp_symbol*)(node->l))->name,
+                                 ((struct wp_symbol*)(node->r))->name);
+        break;
+    default:
+        yyerror("wp_ast_print: unknown node type %d\n", node->type);
+        exit(1);
+    }
+}
+
 void
 wp_ast_regvar (struct wp_node* node, char const* name, double* p)
 {
@@ -861,6 +1000,4 @@ wp_parser_setconst (struct wp_parser* parser, char const* name, double c)
     wp_ast_setconst(parser->ast, name, c);
     wp_ast_optimize(parser->ast);
 }
-
-
 
