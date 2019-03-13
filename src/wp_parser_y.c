@@ -420,6 +420,11 @@ wp_parser_ast_dup (struct wp_parser* my_parser, struct wp_node* node, int move)
 #define WP_EVAL_R(node) node->r->lvp.v
 #define WP_EVAL_L(node) node->l->lvp.v
 
+#define WP_NEG_MOVEUP(node) \
+    node->r = node->l->r; \
+    node->lvp.v = -node->l->lvp.v; \
+    node->rp = node->l->rp;
+
 void
 wp_ast_optimize (struct wp_node* node)
 {
@@ -692,7 +697,26 @@ wp_ast_optimize (struct wp_node* node)
             node->lvp.p = ((struct wp_symbol*)(node->l))->pointer;
             node->type = WP_NEG_P;
         }
-
+        else if (node->l->type == WP_ADD_VP)
+        {
+            WP_NEG_MOVEUP(node);
+            node->type = WP_SUB_VP;
+        }
+        else if (node->l->type == WP_SUB_VP)
+        {
+            WP_NEG_MOVEUP(node);
+            node->type = WP_ADD_VP;
+        }
+        else if (node->l->type == WP_MUL_VP)
+        {
+            WP_NEG_MOVEUP(node);
+            node->type = WP_MUL_VP;
+        }
+        else if (node->l->type == WP_DIV_VP)
+        {
+            WP_NEG_MOVEUP(node);
+            node->type = WP_DIV_VP;
+        }
         break;
     case WP_F1:
         wp_ast_optimize(node->l);
