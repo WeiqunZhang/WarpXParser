@@ -123,14 +123,11 @@ int main(int argc, char* argv[])
             const double omega0 = 0.45e-1;
             parser.setConstant("a0", a0);
             parser.setConstant("omega0", omega0);
-            double x = 4.6;
-            double t = 6.65e-5;
-            parser.registerVariable("x",x);
-            parser.registerVariable("t",t);
+            parser.registerVariables({"x","t"});
             bool failed = false;
-            for (t = 6.3e-6; t <= 6.3e-5; t += 1.1e-6) {
-                for (x = -0.01; x <= 0.01; x += 0.001) {
-                    double r = parser.eval();
+            for (double t = 6.3e-6; t <= 6.3e-5; t += 1.1e-6) {
+                for (double x = -0.01; x <= 0.01; x += 0.001) {
+                    double r = parser.eval(x,t);
                     double e = a0*(x*x) * cos(omega0*t) * (x<=0 ? 0. : 1.);
                     if (r != e && std::abs((r-e)/std::max(r,e)) > 1.e-14) {
                         amrex::Print().SetPrecision(17) << "FAIL: " << parser.expr() << ", "
