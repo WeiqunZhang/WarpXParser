@@ -97,7 +97,7 @@ wp_parser_new (void)
 
     my_parser->ast = wp_parser_ast_dup(my_parser, wp_root,1); /* 1: free the source wp_root */
 
-    if (my_parser->p_root + my_parser->sz_mempool != my_parser->p_free) {
+    if ((char*)my_parser->p_root + my_parser->sz_mempool != (char*)my_parser->p_free) {
         yyerror("wp_parser_new: error in memory size");
         exit(1);
     }
